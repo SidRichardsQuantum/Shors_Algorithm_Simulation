@@ -1,58 +1,96 @@
 import numpy as np
 from random import randint
 from math import log2, ceil
-from scipy.linalg import block_diag
 
 N = 4
-n_qubits = ceil(log2(N))  # 2 ** n_qubits > N
+n_qubits = ceil(log2(N))
 M = 2 ** n_qubits
-#a = randint(2, N)  # Random integer between 2 and N
-a = 3
-print(a)
-
-phi = np.zeros(M, dtype=float)
-phi[0] = 1.0  # Initial state |0⟩|0⟩
+a = randint(2, N)
+print(f"a = {a}")
 
 
-Hadamard = np.matrix([[1, 1], [1, -1]], dtype=float) / np.sqrt(2)
-H = Hadamard
-for i in range(0, n_qubits - 1):
-    Hadamard = np.kron(Hadamard, H)
+def hadamard_first_register(m, n_qubits):
+    """
+    Create Hadamard operation on first register only.
 
-phi = np.dot(Hadamard, phi)
-second_register = np.zeros(M, dtype=float)  # The size of the register is 2 * n_qubits
-second_register[0] = 1
-phi = np.kron(phi, second_register)
+    This creates a superposition of all states in the first register,
+    where all states have equal amplitude.
+    """
+    # Single qubit Hadamard
+    H = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)
+
+    # Multi-qubit Hadamard for first register
+    H_first = H
+    for i in range(n_qubits - 1):
+        H_first = np.kron(H_first, H)
+
+    # Identity for second register
+    I_second = np.eye(m, dtype=complex)
+
+    # Total Hadamard operation (H⊗I)
+    H_total = np.kron(H_first, I_second)
+
+    return H_total
 
 
-U = np.zeros((M*M, M*M))
-for x in range(M):
-    for y in range(M):
-        input_state = x * M + y  # |x⟩|y⟩
-        output_y = (y + pow(a, x, N)) % N
-        output_state = x * M + output_y  # |x⟩|y ⊕ f(x)⟩
-        U[output_state, input_state] = 1.0
-print(U)
+def oracle_unitary(m, a, N):
+    """Create oracle function operator that maps |x⟩|y⟩ → |x⟩|(y + a^x) mod N⟩"""
+    U = np.zeros((m * m, m * m), dtype=complex)
 
-phi = phi.reshape((M ** 2, 1))
-phi = np.dot(U, phi)
-print(phi)
-# phi = phi.reshape((M, M))
-# phi = phi[:, 0]
+    for x in range(m):
+        for y in range(m):
+            input_state = x * m + y  # |x⟩|y⟩
+            output_y = (y + pow(a, x, N)) % N
+            output_state = x * m + output_y  # |x⟩|(y + a ** x) % N⟩
+            U[output_state, input_state] = 1.0
+
+    return U
 
 
 def inverse_qft(m):
+    """Create inverse QFT matrix"""
     IQFT = np.zeros((m, m), dtype=complex)
+
     for k in range(m):
         for l in range(m):
-            theta = 2j * np.pi * k * l
-            IQFT[k, l] = (1 / np.sqrt(m)) * np.exp(theta / m)
+            IQFT[k, l] = (1 / np.sqrt(m)) * np.exp(2j * np.pi * k * l / m)
+
     return IQFT
 
-I_second = np.eye(M)  # 4x4 identity for second register
-IQFT_first = inverse_qft(M)  # 4x4 IQFT for first register
-IQFT_total = np.kron(IQFT_first, I_second)  # 16x16 total IQFT operation
 
+def inverse_qft_first_register(m):
+    """Create inverse QFT operation on first register only"""
+    IQFT_first = inverse_qft(m)
+    I_second = np.eye(m, dtype=complex)
+    IQFT_total = np.kron(IQFT_first, I_second)
+    return IQFT_total
+
+
+# Initialize state |0⟩|0⟩
+phi = np.zeros(M * M, dtype=complex)  # (M^2)-dimensional state vector
+phi[0] = 1.0
+
+# Apply Hadamard to first register only
+H_total = hadamard_first_register(M, n_qubits)
+phi = H_total @ phi
+print("After Hadamard:", phi)
+
+# Apply oracle U_f
+U = oracle_unitary(M, a, N)
+phi = U @ phi
+print("After oracle:", phi)
+
+# Apply inverse QFT to first register only
+IQFT_total = inverse_qft_first_register(M)
 phi = IQFT_total @ phi
 print("Final state:", phi)
-print("Probabilities:", np.abs(phi))
+print("Probabilities:", np.abs(phi) ** 2)
+
+# To extract measurement probabilities for first register:
+prob_first_register = np.zeros(M)
+for x in range(M):
+    for y in range(M):
+        state_index = x * M + y
+        prob_first_register[x] += np.abs(phi[state_index]) ** 2
+
+print("First register probabilities:", prob_first_register)
