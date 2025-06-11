@@ -1,15 +1,15 @@
 import numpy as np
-from random import randint
 from math import log2, ceil
 
 
 def hadamard_first_register(m, n_qubits):
     """
-    Create Hadamard operation on first register only.
+    Create Hadamard operator for the first register only.
 
     This creates a superposition of all states in the first register,
     where all states have equal amplitude.
     """
+
     # Single qubit Hadamard
     H = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)
 
@@ -29,8 +29,8 @@ def hadamard_first_register(m, n_qubits):
 
 def oracle_unitary(m, a, N):
     """Create oracle function operator that maps |x⟩|y⟩ → |x⟩|(y + a^x) mod N⟩"""
-    U = np.zeros((m * m, m * m), dtype=complex)
 
+    U = np.zeros((m * m, m * m), dtype=complex)
     for x in range(m):
         for y in range(m):
             input_state = x * m + y  # |x⟩|y⟩
@@ -43,8 +43,8 @@ def oracle_unitary(m, a, N):
 
 def inverse_qft(m):
     """Create inverse QFT matrix"""
-    IQFT = np.zeros((m, m), dtype=complex)
 
+    IQFT = np.zeros((m, m), dtype=complex)
     for k in range(m):
         for l in range(m):
             IQFT[k, l] = (1 / np.sqrt(m)) * np.exp(2j * np.pi * k * l / m)
@@ -53,14 +53,15 @@ def inverse_qft(m):
 
 
 def inverse_qft_first_register(m):
-    """Create inverse QFT operation on first register only"""
+    """Create inverse QFT operator for the first register only"""
+
     IQFT_first = inverse_qft(m)
     I_second = np.eye(m, dtype=complex)
     IQFT_total = np.kron(IQFT_first, I_second)
     return IQFT_total
 
 
-def run_shors_quantum_algorithm(N, a):
+def run_quantum_gates(N, a):
     """
     Run the quantum part of Shor's algorithm.
 
@@ -71,6 +72,7 @@ def run_shors_quantum_algorithm(N, a):
     Returns:
         tuple: (prob_first_register, M, final_state)
     """
+
     n_qubits = ceil(log2(N))
     M = 2 ** n_qubits
 
@@ -98,20 +100,3 @@ def run_shors_quantum_algorithm(N, a):
             prob_first_register[x] += np.abs(phi[state_index]) ** 2
 
     return prob_first_register, M, phi
-
-
-# if __name__ == "__main__":
-#     # Example usage
-#     N = 15
-#     a = randint(2, N)
-#
-#     prob_first_register, M, final_state = run_shors_quantum_algorithm(N, a)
-#
-#     print(f"N = {N}, a = {a}")
-#     print(f"Function f(x) = {a}^x mod {N}:")
-#     for x in range(M):
-#         print(f"  f({x}) = {a}^{x} mod {N} = {pow(a, x, N)}")
-#
-#     print(f"\nFirst register probabilities:")
-#     for x in range(M):
-#         print(f"  P(|{x}⟩) = {prob_first_register[x]:.4f}")

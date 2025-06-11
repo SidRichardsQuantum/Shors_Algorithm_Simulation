@@ -32,7 +32,7 @@ def classical_checks(N):
         message = f'N is a perfect power: {N} = {base}^{exponent}. Base factor is {base}'
         return True, factors, message
 
-    # Generate random integer between 2 and N-1
+    # Generate random integer between 2 and N - 1
     a = randint(2, N - 1)
 
     # Check if gcd(a, N) > 1
@@ -42,17 +42,5 @@ def classical_checks(N):
         message = f'Lucky! gcd({a}, {N}) = {gcd_val}. The factors of N are: {gcd_val} and {N // gcd_val}'
         return True, factors, message
     else:
-        message = f'Classical checks passed. a = {a}, gcd(a, N) = 1. Proceed to quantum part.'
-        return False, None, message
-
-
-# # Example usage:
-# if __name__ == "__main__":
-#     N = 15
-#     success, factors, message = classical_checks(N)
-#     print(message)
-#
-#     if success:
-#         print(f"Factorization complete: {N} = {factors[0]} × {factors[1]}")
-#     else:
-#         print("Classical checks failed. Quantum algorithm needed.")
+        message = f'Classical checks passed with a = {a}.'
+        return False, a, message
