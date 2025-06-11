@@ -50,6 +50,7 @@ pip install -r requirements.txt
 
 ### Classical Post-Processing
 - Analyzes measurement probabilities to find period candidates
+- Checks that $r$ is even
 - Calculates both prime factors
 - Verifies factors through classical division
 
