@@ -71,7 +71,7 @@ If a^r = 1 mod N, then a^(r/2) ± 1 gives are the two prime factors
 Where:
 - $N$ is the coprime (factor of two primes)
 - $a$ is a randomly chosen integer less than $N$
-- $r$ is the period of the function $f(x) = a^x mod N$
+- $r$ is the period of the function ```f(x) = a^x mod N```
 
 ## Educational Resources
 
