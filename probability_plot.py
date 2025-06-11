@@ -1,4 +1,4 @@
-import numpy as np
+#import numpy as np
 import matplotlib.pyplot as plt
 from quantum_part import run_quantum_gates
 

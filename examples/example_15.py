@@ -43,4 +43,4 @@ if __name__ == "__main__":
     result = run_shors_demo(N=N)
 
     if result:
-        print(f"\nClassical methods succeeded: {N} = {result[0]} × {result[1]}"
+        print(f"\nClassical methods succeeded: {N} = {result[0]} × {result[1]}")
