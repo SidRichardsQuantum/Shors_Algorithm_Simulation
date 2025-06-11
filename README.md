@@ -37,7 +37,7 @@ pip install -r requirements.txt
 
 ### Classical Checks
 - Checks that $N$ is not trivial (even or a perfect power)
-- Generates a random integer 2 < a < N
+- Generates a random integer ```2 < a < N```
 
 ### Quantum Register Simulation
 - Uses complex numpy arrays to represent quantum state vectors
