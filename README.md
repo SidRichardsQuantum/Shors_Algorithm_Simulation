@@ -86,3 +86,9 @@ This implementation is inspired by the original work of Peter Shor and serves as
 
 **Note**: This is a classical simulation for educational purposes.
 Real quantum advantage requires actual quantum hardware or quantum simulators that can handle the exponential complexity efficiently.
+
+---
+
+📘 Author: [Sid Richards]
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="20" /> LinkedIn: [https://www.linkedin.com/in/sid-richards-21374b30b/]
