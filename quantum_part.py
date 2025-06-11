@@ -2,12 +2,6 @@ import numpy as np
 from random import randint
 from math import log2, ceil
 
-N = 4
-n_qubits = ceil(log2(N))
-M = 2 ** n_qubits
-a = randint(2, N)
-print(f"a = {a}")
-
 
 def hadamard_first_register(m, n_qubits):
     """
@@ -66,31 +60,58 @@ def inverse_qft_first_register(m):
     return IQFT_total
 
 
-# Initialize state |0⟩|0⟩
-phi = np.zeros(M * M, dtype=complex)  # (M^2)-dimensional state vector
-phi[0] = 1.0
+def run_shors_quantum_algorithm(N, a):
+    """
+    Run the quantum part of Shor's algorithm.
 
-# Apply Hadamard to first register only
-H_total = hadamard_first_register(M, n_qubits)
-phi = H_total @ phi
-print("After Hadamard:", phi)
+    Args:
+        N: Number to factor
+        a: Base for the modular exponentiation
 
-# Apply oracle U_f
-U = oracle_unitary(M, a, N)
-phi = U @ phi
-print("After oracle:", phi)
+    Returns:
+        tuple: (prob_first_register, M, final_state)
+    """
+    n_qubits = ceil(log2(N))
+    M = 2 ** n_qubits
 
-# Apply inverse QFT to first register only
-IQFT_total = inverse_qft_first_register(M)
-phi = IQFT_total @ phi
-print("Final state:", phi)
-print("Probabilities:", np.abs(phi) ** 2)
+    # Initialize state |0⟩|0⟩
+    phi = np.zeros(M * M, dtype=complex)
+    phi[0] = 1.0
 
-# To extract measurement probabilities for first register:
-prob_first_register = np.zeros(M)
-for x in range(M):
-    for y in range(M):
-        state_index = x * M + y
-        prob_first_register[x] += np.abs(phi[state_index]) ** 2
+    # Apply Hadamard to first register only
+    H_total = hadamard_first_register(M, n_qubits)
+    phi = H_total @ phi
 
-print("First register probabilities:", prob_first_register)
+    # Apply oracle U_f
+    U = oracle_unitary(M, a, N)
+    phi = U @ phi
+
+    # Apply inverse QFT to first register only
+    IQFT_total = inverse_qft_first_register(M)
+    phi = IQFT_total @ phi
+
+    # Extract measurement probabilities for first register
+    prob_first_register = np.zeros(M)
+    for x in range(M):
+        for y in range(M):
+            state_index = x * M + y
+            prob_first_register[x] += np.abs(phi[state_index]) ** 2
+
+    return prob_first_register, M, phi
+
+
+# if __name__ == "__main__":
+#     # Example usage
+#     N = 15
+#     a = randint(2, N)
+#
+#     prob_first_register, M, final_state = run_shors_quantum_algorithm(N, a)
+#
+#     print(f"N = {N}, a = {a}")
+#     print(f"Function f(x) = {a}^x mod {N}:")
+#     for x in range(M):
+#         print(f"  f({x}) = {a}^{x} mod {N} = {pow(a, x, N)}")
+#
+#     print(f"\nFirst register probabilities:")
+#     for x in range(M):
+#         print(f"  P(|{x}⟩) = {prob_first_register[x]:.4f}")
