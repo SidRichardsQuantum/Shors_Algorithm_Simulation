@@ -1,6 +1,6 @@
 #import numpy as np
 import matplotlib.pyplot as plt
-from quantum_part import run_quantum_gates
+from src.quantum_part.quantum_part import run_quantum_gates
 
 
 def plot_first_register_probabilities(N, a):

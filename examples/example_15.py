@@ -1,5 +1,5 @@
-from classical_checks import classical_checks
-from probability_plot import plot_first_register_probabilities
+from src.classical_parts.classical_checks import classical_checks
+from src.plotters.probability_plot import plot_first_register_probabilities
 
 
 def run_shors_demo(N=15):
