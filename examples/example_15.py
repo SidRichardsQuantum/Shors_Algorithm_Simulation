@@ -39,7 +39,7 @@ def run_shors_demo(N=15):
 
 
 if __name__ == "__main__":
-    N = 21
+    N = 15
     result = run_shors_demo(N=N)
 
     if result:

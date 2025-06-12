@@ -21,7 +21,7 @@ def hadamard_first_register(m, n_qubits):
     # Identity for second register
     I_second = np.eye(m, dtype=complex)
 
-    # Total Hadamard operation (H⊗I)
+    # Total Hadamard operation (H ⊗ I)
     H_total = np.kron(H_first, I_second)
 
     return H_total
@@ -41,7 +41,7 @@ def oracle_unitary(m, a, N):
     return U
 
 
-def inverse_qft(m):
+def inverse_qft_first_register(m):
     """Create inverse QFT matrix"""
 
     IQFT = np.zeros((m, m), dtype=complex)
@@ -52,10 +52,10 @@ def inverse_qft(m):
     return IQFT
 
 
-def inverse_qft_first_register(m):
+def inverse_qft_total_register(m):
     """Create inverse QFT operator for the first register only"""
 
-    IQFT_first = inverse_qft(m)
+    IQFT_first = inverse_qft_first_register(m)
     I_second = np.eye(m, dtype=complex)
     IQFT_total = np.kron(IQFT_first, I_second)
     return IQFT_total
@@ -89,7 +89,7 @@ def run_quantum_gates(N, a):
     phi = U @ phi
 
     # Apply inverse QFT to first register only
-    IQFT_total = inverse_qft_first_register(M)
+    IQFT_total = inverse_qft_total_register(M)
     phi = IQFT_total @ phi
 
     # Extract measurement probabilities for first register
