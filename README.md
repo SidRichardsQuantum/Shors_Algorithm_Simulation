@@ -37,7 +37,7 @@ pip install -r requirements.txt
 
 ### Classical Checks
 - Checks that $N$ is not trivial (even or a perfect power)
-- Generates a random integer 2 < a < N
+- Generates a random integer ```2 < a < N```
 
 ### Quantum Register Simulation
 - Uses complex numpy arrays to represent quantum state vectors
@@ -71,7 +71,7 @@ If a^r = 1 mod N, then a^(r/2) ± 1 gives are the two prime factors
 Where:
 - $N$ is the coprime (factor of two primes)
 - $a$ is a randomly chosen integer less than $N$
-- $r$ is the period of the function $f(x) = a^x mod N$
+- $r$ is the period of the function ```f(x) = a^x mod N```
 
 ## Educational Resources
 
