@@ -104,14 +104,27 @@ where both $\Sigma$s run from $0$ to $2^n - 1 = 15$; we can see that this maps:
        ⋮
 |15⟩|y⟩ → |15⟩|y + 13⟩
 ```
-The element $i, j$ of $U$ is $1$, where $i$ and $j$ are the output and input states respectively.
+The element $j, k$ of $U$ is $1$, where $j$ and $k$ are the output and input states respectively.
 ```
-i = x * 16 + (y + 7 ** x mod 15)
-j = x * 16 + y
+j = x * 16 + (y + 7 ** x mod 15)
+k = x * 16 + y
 ```
 All other elements are $0$.
 
+For the IQFT matrix, the element $j, k$ is:
+```
+(1 / 4) * exp(2πi * j * k / 16)
+```
+Applying this matrix increases the probabilities of measuring the states $|0⟩, |4⟩, |8⟩, |12⟩$, while decreasing those for all other states.
+These state numbers are multiples of $4$ - which is the period $r$.
 
+Post-processing checks will be passed, as $r$ is even; so there is no need to restart the algorithm with a different $a$.
+Therefore, the factors are:
+```
+(a ** (r / 2)) + 1 mod N = (7 ** (4 / 2)) + 1 mod 15 = 5
+(a ** (r / 2)) - 1 mod N = (7 ** (4 / 2)) - 1 mod 15 = 3
+```
+such that $15 = 5 * 3$.
 
 # References
 
