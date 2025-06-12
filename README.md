@@ -10,7 +10,7 @@ This implementation simulates the quantum operations classically to illustrate h
 
 ## Algorithm Steps
 
-1. **Input Validation**: Takes a coprime integer $N$ and checks that it isn't even or a perfect power
+1. **Input Validation**: Takes a semiprime integer $N$ and checks that it isn't even or a perfect power
 2. **Quantum Register Setup**: Creates two qubit registers
 3. **Superposition**: Applies Hadamard gates to the first register to create quantum superposition with equal amplitudes
 4. **Modular Exponentiation**: Implements an oracle unitary matrix to entangle the registers
@@ -69,7 +69,7 @@ If a^r = 1 mod N, then a^(r/2) ± 1 gives are the two prime factors
 ```
 
 Where:
-- $N$ is the coprime (factor of two primes)
+- $N$ is the semiprime (factor of two primes)
 - $a$ is a randomly chosen integer less than $N$
 - $r$ is the period of the function ```f(x) = a^x mod N```
 
