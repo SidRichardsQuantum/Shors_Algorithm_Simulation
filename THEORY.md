@@ -104,7 +104,7 @@ where both $\Sigma$s run from $0$ to $2^n - 1 = 15$; we can see that this maps:
        ⋮
 |15⟩|y⟩ → |15⟩|y + 13⟩
 ```
-The element $j, k$ of $U$ is $1$, where $j$ and $k$ are the output and input states respectively.
+The element $j, k$ is $1$, where $j$ and $k$ are the output and input states respectively.
 ```
 j = x * 16 + (y + 7 ** x mod 15)
 k = x * 16 + y
