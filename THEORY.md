@@ -61,6 +61,56 @@ In a real implementation of Shor's algorithm, a measurement of the first registe
 
 ## Classical Post Processing
 
+For us to have $(a^{r/2} \pm 1)$, $r$ must be even.
+If $r$ is not even, the algorithm needs to be restarted with a different random integer $a$.
+
+## Default Example
+
+The simplest example is factoring $N = 15$ into $3$ and $5$, as it is the smallest non-trivial semiprime.
+Lets say $a = 7$, then we can see that $a^x mod N$ is periodic:
+```
+7 ** 0 mod 15 = 1
+7 ** 1 mod 15 = 7
+7 ** 2 mod 15 = 4
+7 ** 3 mod 15 = 13
+7 ** 4 mod 15 = 1
+7 ** 5 mod 15 = 7
+        ⋮
+```
+(Therefore, $r = 4$ for $a = 7$ and $N = 15$; but lets get the period from simulating Shor's algorithm!)
+
+The smallest power of $2$ greater than $N$ is $16 = 2^4$, hence the number of qubits in the first register required is $n = 4$.
+Therefore, the total number of qubits in the total register is $8$.
+
+Applying a Hadamard operator on a qubit $|0⟩$ gives:
+```
+H|0⟩ = (1/√2) * (|0⟩ + |1⟩)
+```
+and applying $H$ on all qubits in the first register:
+```
+(H_1 ⊗ H_2 ⊗ H_3 ⊗ H_4)|0⟩ = (1 / 4) * (|0⟩ + |1⟩ + ... + |15⟩)
+```
+(However, in the python file quanutm_part.py, ```H_1 ⊗ H_2 ⊗ ... ⊗ H_n``` is multiplied with the itentity $I_{16 \times 16}$ to leave the second register unchanged.
+This is a $256 \times 256$ matrix, which is already quite big considering this is the trivial example.)
+
+Writing the unitary modular oracle operator as:
+```
+U = ∑∑(|x⟩|(y + a ** x) mod N⟩⟨y|⟨x|)
+```
+where both $\Sigma$s run from $0$ to $2^n - 1 = 15$; we can see that this maps:
+```
+|0⟩|y⟩ → |0⟩|y + 1⟩
+|1⟩|y⟩ → |1⟩|y + 7⟩
+       ⋮
+|15⟩|y⟩ → |15⟩|y + 13⟩
+```
+The element $i, j$ of $U$ is $1$, where $i$ and $j$ are the output and input states respectively.
+```
+i = x * 16 + (y + 7 ** x mod 15)
+j = x * 16 + y
+```
+All other elements are $0$.
+
 
 
 # References
