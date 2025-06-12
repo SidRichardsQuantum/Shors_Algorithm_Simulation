@@ -1,4 +1,4 @@
-from src.classical_parts.classical_checks import classical_checks
+from src.classical_parts.pre_checks import pre_checks
 from src.plotters.probability_plot import plot_first_register_probabilities
 
 
@@ -14,7 +14,7 @@ def run_shors_demo(N=15):
     # Classical preprocessing
     print(f"N = {N}\nRunning Classical Checks...")
 
-    success, result, message = classical_checks(N)
+    success, result, message = pre_checks(N)
     print(message)
 
     if success:

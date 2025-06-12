@@ -11,7 +11,7 @@ def is_perfect_power(N):
     return False, None, None
 
 
-def classical_checks(N):
+def pre_checks(N):
     """
     Performs classical checks for Shor's algorithm.
 
