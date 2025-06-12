@@ -66,6 +66,8 @@ If $r$ is not even, the algorithm needs to be restarted with a different random 
 
 ## Default Example
 
+#### Modular Periodicity
+
 The simplest example is factoring $N = 15$ into $3$ and $5$, as it is the smallest non-trivial semiprime.
 Lets say $a = 7$, then we can see that $a^x mod N$ is periodic:
 ```
@@ -79,8 +81,12 @@ Lets say $a = 7$, then we can see that $a^x mod N$ is periodic:
 ```
 (Therefore, $r = 4$ for $a = 7$ and $N = 15$; but lets get the period from simulating Shor's algorithm!)
 
+#### Qubit Number
+
 The smallest power of $2$ greater than $N$ is $16 = 2^4$, hence the number of qubits in the first register required is $n = 4$.
 Therefore, the total number of qubits in the total register is $8$.
+
+#### Hadamard Matrix
 
 Applying a Hadamard operator on a qubit $|0⟩$ gives:
 ```
@@ -93,7 +99,9 @@ and applying $H$ on all qubits in the first register:
 (However, in the python file quanutm_part.py, ```H_1 ⊗ H_2 ⊗ ... ⊗ H_n``` is multiplied with the itentity $I_{16 \times 16}$ to leave the second register unchanged.
 This is a $256 \times 256$ matrix, which is already quite big considering this is the trivial example.)
 
-Writing the unitary modular oracle operator as:
+#### Unitary Matrix
+
+Writing the oracle unitary operator as:
 ```
 U = ∑∑(|x⟩|(y + a ** x) mod N⟩⟨y|⟨x|)
 ```
@@ -111,12 +119,16 @@ k = x * 16 + y
 ```
 All other elements are $0$.
 
-For the IQFT matrix, the element $j, k$ is:
+#### IQFT Matrix
+
+For the IQFT operator, the element $j, k$ is:
 ```
 (1 / 4) * exp(2πi * j * k / 16)
 ```
 Applying this matrix increases the probabilities of measuring the states $|0⟩, |4⟩, |8⟩, |12⟩$, while decreasing those for all other states.
 These state numbers are multiples of $4$ - which is the period $r$.
+
+#### Result
 
 Post-processing checks will be passed, as $r$ is even; so there is no need to restart the algorithm with a different $a$.
 Therefore, the factors are:
@@ -129,4 +141,5 @@ such that $15 = 5 * 3$.
 # References
 
 [https://en.m.wikipedia.org/wiki/Shor's_algorithm]
+
 [https://en.m.wikipedia.org/wiki/RSA_cryptosystem]
