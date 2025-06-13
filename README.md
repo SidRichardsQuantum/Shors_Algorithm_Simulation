@@ -33,7 +33,7 @@ See THEORY.md for a descriptive algorithm walkthrough.
 
 ```bash
 git clone https://github.com/SidRichardsQuantum/Shors_Algorithm_simulation
-cd Shors_Algorithm_simulation
+cd Shors_Algorithm_Simulation
 pip install -r requirements.txt
 ```
 
