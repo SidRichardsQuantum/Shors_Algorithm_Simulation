@@ -74,6 +74,25 @@ pip install -r requirements.txt
 - **Educational Purpose**: Not suitable for large numbers practically used for RSA
 - **Multiple Runs**: May require multiple runs if classical checks on $N, a$ or $r$ fail
 
+## Project Structure
+
+```
+Shors_Algorithm_Simulation/
+├── LICENSE                               # MIT License text
+├── README.md                             # This file
+├── requirements.txt                      # Packages required to be installed
+├── images                                # Runtime graph
+│   └── 
+├── THEORY.md                             # File explaining the physics behind this project
+├── src/                                  # Source code
+│   ├── classical_checks/
+│   │   ├── pre_checks/
+│   │   └── post_checks/
+│   ├── quantum_part/
+│   │   ├── pre_checks/
+│   │   └── post_checks/
+```
+
 ## Educational Resources
 
 - [Shor's Algorithm Explained](https://en.wikipedia.org/wiki/Shor%27s_algorithm)
