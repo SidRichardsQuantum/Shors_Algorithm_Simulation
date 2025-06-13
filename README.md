@@ -79,18 +79,29 @@ pip install -r requirements.txt
 ```
 Shors_Algorithm_Simulation/
 ├── LICENSE                               # MIT License text
-├── README.md                             # This file
 ├── requirements.txt                      # Packages required to be installed
+├── README.md                             # This file
+├── THEORY.md                             # File explaining the physics of the algorithm
 ├── images                                # Runtime graph
 │   └── 
-├── THEORY.md                             # File explaining the physics behind this project
 ├── src/                                  # Source code
-│   ├── classical_checks/
+│   ├── classical_parts/
 │   │   ├── pre_checks/
 │   │   └── post_checks/
 │   ├── quantum_part/
-│   │   ├── pre_checks/
-│   │   └── post_checks/
+│   │   └── quantum_part/
+│   └── plotters/
+│       ├── probability_plot/
+│       └── runtime_plot/
+└── examples/
+    ├── example_15/
+    ├── example_21/
+    ├── example_35/
+    ├── example_55/
+    ├── example_65/
+    ├── example_77/
+    ├── example_91/
+    └── example_143/
 ```
 
 ## Educational Resources
