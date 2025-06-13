@@ -69,7 +69,7 @@ pip install -r requirements.txt
 
 ## Limitations
 
-- **Exponential Memory**: Classical simulation runtime is exponential for factorisation problems
+- **Exponential Memory**: Classical simulation runtime is (sub-)exponential for factorisation problems
 - **Small Numbers Only**: Practical for factoring small integers ($N < 100$) using few qubits
 - **Educational Purpose**: Not suitable for large numbers practically used for RSA
 - **Multiple Runs**: May require multiple runs if classical checks on $N, a$ or $r$ fail
@@ -87,7 +87,7 @@ This implementation is inspired by the original work of Peter Shor and serves as
 ---
 
 **Note**: This is a classical simulation for educational purposes.
-Real quantum advantage requires actual quantum hardware that can efficiently implement this factorisation algorithm in polynomial time.
+Real quantum advantage requires actual quantum hardware that can efficiently implement this factorisation algorithm in polynomial (in $log(N)$) time.
 
 ---
 
