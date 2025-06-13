@@ -93,13 +93,12 @@ Shors_Algorithm_Simulation/
 │   └── plotters/
 │       ├── probability_plot/
 │       └── runtime_plot/
+└── tests/
+│   └── return_runtime/
 └── examples/
     ├── example_15/
-    ├── example_21/
     ├── example_35/
     ├── example_55/
-    ├── example_65/
-    ├── example_77/
     ├── example_91/
     └── example_143/
 ```
