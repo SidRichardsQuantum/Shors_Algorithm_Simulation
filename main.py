@@ -4,7 +4,7 @@ from src.classical_parts.post_checks import post_checks
 from src.plots_and_period.probability_plot import plot_probs
 
 
-def shors_simulation(N=15, a=None, show_plots=True):
+def shors_simulation(N=15, a=None, show_plots=True, sparse=True):
     """
     Shor's algorithm simulation.
     Default: N = 15
@@ -39,7 +39,7 @@ def shors_simulation(N=15, a=None, show_plots=True):
         a = value
 
         # Run the algorithm
-        r, probabilities = find_period(N, a)
+        r, probabilities = find_period(N, a, sparse)
 
         # Do the factorization
         result = post_checks(N, a, r)

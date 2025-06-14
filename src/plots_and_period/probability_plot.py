@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from src.quantum_part.run_quantum_gates import run_quantum_gates
 
 
-def compute_probs(N, a):
+def compute_probs(N, a, sparse=True):
     """
     Compute the first register probabilities without plotting.
     """
@@ -12,7 +12,7 @@ def compute_probs(N, a):
     M = 2 ** n_qubits
 
     # Run the quantum algorithm
-    phi = run_quantum_gates(N, a)
+    phi = run_quantum_gates(N, a, sparse)
 
     # Extract the first register state probabilities
     prob_first_register = np.zeros(M)
@@ -37,7 +37,7 @@ def plot_probs(N, a, prob_first_register, show_plots=True):
     plt.ylabel('Probability')
     plt.title(f'First Register Measurement Probabilities\n(Period detection for N={N}, a={a})')
     plt.grid(True, alpha=0.3)
-    plt.xticks(range(M), [f'|{x}⟩' for x in range(M)])
+    plt.xticks(range(0, M, n_qubits // 2), [f'|{x}⟩' for x in range(0, M, n_qubits // 2)])
     plt.tight_layout()
 
     if show_plots:

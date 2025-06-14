@@ -1,11 +1,11 @@
 import numpy as np
 from math import log2, ceil
-from src.quantum_part.hadamard_matrix import hadamard_matrix
-from src.quantum_part.oracle_matrix import oracle_matrix
-from src.quantum_part.iqft_matrix import iqft_matrix
+from quantum_part.hadamard_matrix import hadamard_matrix_efficient, hadamard_matrix
+from quantum_part.oracle_matrix import oracle_matrix_sparse, oracle_matrix
+from src.quantum_part.iqft_matrix import iqft_matrix, iqft_matrix_sparse
 
 
-def run_quantum_gates(N, a):
+def run_quantum_gates(N, a, sparse=True):
     """
     Run the quantum part of Shor's algorithm.
 
@@ -27,17 +27,31 @@ def run_quantum_gates(N, a):
     phi = np.zeros(M ** 2, dtype=complex)
     phi[0] = 1.0
 
-    # Apply Hadamard matrix
-    H = hadamard_matrix(n_qubits)
-    phi = H @ phi
+    if sparse:
+        # Apply Hadamard matrix
+        H = hadamard_matrix_efficient(n_qubits)
+        phi = H @ phi
 
-    # Apply oracle matrix
-    U = oracle_matrix(N, a)
-    phi = U @ phi
+        # Apply oracle matrix
+        U = oracle_matrix_sparse(N, a)
+        phi = U @ phi
 
-    # Apply inverse QFT matrix
-    IQFT = iqft_matrix(M)
-    phi = IQFT @ phi
+        # Apply inverse QFT matrix
+        IQFT = iqft_matrix_sparse(M)
+        phi = IQFT @ phi
+
+    else:
+        # Apply Hadamard matrix
+        H = hadamard_matrix(n_qubits)
+        phi = H @ phi
+
+        # Apply oracle matrix
+        U = oracle_matrix(N, a)
+        phi = U @ phi
+
+        # Apply inverse QFT matrix
+        IQFT = iqft_matrix(M)
+        phi = IQFT @ phi
 
     #Returns the final whole register state
     return phi
