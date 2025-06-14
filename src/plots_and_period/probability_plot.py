@@ -23,7 +23,7 @@ def compute_probs(N, a):
 
     return prob_first_register
 
-def plot_probs(N, a, prob_first_register):
+def plot_probs(N, a, prob_first_register, show_plots=True):
     """
     Plot the probabilities that were already computed.
     """
@@ -39,4 +39,8 @@ def plot_probs(N, a, prob_first_register):
     plt.grid(True, alpha=0.3)
     plt.xticks(range(M), [f'|{x}⟩' for x in range(M)])
     plt.tight_layout()
-    plt.show()
+
+    if show_plots:
+        plt.show()  # Only show if requested
+    else:
+        plt.close()

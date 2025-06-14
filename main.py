@@ -4,7 +4,7 @@ from src.classical_parts.post_checks import post_checks
 from src.plots_and_period.probability_plot import plot_probs
 
 
-def shors_simulation(N=15, a=None):
+def shors_simulation(N=15, a=None, show_plots=True):
     """
     Shor's algorithm simulation.
     Default: N = 15
@@ -46,4 +46,4 @@ def shors_simulation(N=15, a=None):
         print(result)
 
         # Now show the plot
-        plot_probs(N, a, probabilities)
+        plot_probs(N, a, probabilities, show_plots=show_plots)
