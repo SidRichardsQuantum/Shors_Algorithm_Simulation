@@ -140,6 +140,13 @@ such that $15 = 5 * 3$.
 
 # References
 
-[https://en.m.wikipedia.org/wiki/Shor's_algorithm]
+- [Shor's Algorithm Explained](https://en.wikipedia.org/wiki/Shor%27s_algorithm)
+- [Quantum Fourier Transform](https://qiskit.org/textbook/ch-algorithms/quantum-fourier-transform.html)
+- [Period Finding and Factorization](https://docs.microsoft.com/en-us/quantum/concepts/algorithms)
 
-[https://en.m.wikipedia.org/wiki/RSA_cryptosystem]
+---
+
+📘 Author: [Sid Richards]
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="20" /> LinkedIn: [https://www.linkedin.com/in/sid-richards-21374b30b/]
+

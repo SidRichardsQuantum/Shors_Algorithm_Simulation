@@ -8,70 +8,100 @@ This project demonstrates the core concepts of Shor's algorithm without relying 
 Shor's algorithm is a quantum algorithm that efficiently finds the prime factors of large integers, which forms the basis for breaking RSA encryption.
 This implementation simulates the quantum operations classically to illustrate how the algorithm works step-by-step.
 
+We will use Qiskit to draw the quantum circuit, but nothing more.
+
 ## Algorithm Steps
 
-1. **Input Validation**: Takes a semiprime integer $N$ and checks that it isn't even or a perfect power
+1. **Input Validation**: Takes a semiprime and checks that it isn't even or a perfect power
 2. **Quantum Register Setup**: Creates two qubit registers
-3. **Superposition**: Applies Hadamard gates to the first register to create quantum superposition with equal amplitudes
+3. **Equal Superposition**: Applies Hadamard gates to the first register to create quantum superposition with equal amplitudes
 4. **Modular Exponentiation**: Implements an oracle unitary matrix to entangle the registers
 5. **Quantum Fourier Transform**: Applies an inverse QFT matrix to extract period information
-6. **Period Finding**: Analyzes measurement probabilities to determine period $r$
+6. **Period Finding**: Analyzes measurement probabilities to determine period
 7. **Classical Post-Processing**: Uses the period to calculate prime factors
+
+See THEORY.md for a descriptive algorithm walkthrough.
 
 ## Features
 
 - **Pure Python Implementation**: No quantum computing libraries required
 - **Educational Focus**: Clear step-by-step implementation with detailed comments
 - **Visualization**: Plots probability distributions to visualize quantum measurements
-- **Runtimes**: Graph of $N$ against code runtime to show the exponential nature of this classical simulation
+- **Runtimes**: Graph of code runtime to show the exponential nature of this classical simulation
 
 ## Installation
 
 ```bash
 git clone https://github.com/SidRichardsQuantum/Shors_Algorithm_simulation
-cd Shors_Algorithm_simulation
+cd Shors_Algorithm_Simulation
 pip install -r requirements.txt
 ```
 
 ## Implementation Details
 
+- $N$ is the semiprime (factor of two primes)
+- $a$ is a randomly chosen integer less than $N$
+- $r$ is the period of the function ```f(x) = a^x mod N```
+
 ### Classical Checks
 - Checks that $N$ is not trivial (even or a perfect power)
-- Generates a random integer ```2 < a < N```
+- Generates a random integer ```2 ≤ a < N``` that is not a factor of $N$
 
 ### Quantum Register Simulation
 - Uses complex numpy arrays to represent quantum state vectors
 - Implements qubit registers as tensor products of individual qubit states
 
 ### Quantum Gates
-- **Hadamard Gates**: Creates an equal superposition of all states in the first register
-- **Unitary Gate**: Implements modular exponentiation oracle
+- **Hadamard**: Creates an equal superposition of all states in the first register
+- **Unitary Oracle**: Implements modular exponentiation oracle to entangle the registers
 - **Inverse QFT**: Extracts period information from quantum state
 
 ### Classical Post-Processing
 - Analyzes measurement probabilities to find period candidates
 - Checks that $r$ is even
-- Calculates both prime factors
-- Verifies factors through classical division
+- Calculates both prime factors $p$ and $q$
+- Verifies $N = p * q$
+
+### Graphs
+
+- After applying the IQFT matrix, we plot the state probabilities against state-index to display periodicity
+- Runtime can be plotted against semiprimes to show the exponential nature of this classical simulation
 
 ## Limitations
 
-- **Exponential Memory**: Classical simulation runtime is exponential for factorisation problems
-- **Small Numbers Only**: Practical for factoring small integers (N < 100) using few qubits
+- **Exponential Memory**: Classical simulation runtime is (sub-)exponential for factorisation problems
+- **Small Numbers Only**: Practical for factoring small integers ($N < 100$) using few qubits
 - **Educational Purpose**: Not suitable for large numbers practically used for RSA
-- **Multiple Runs**: May require multiple runs to find correct factors
+- **Multiple Runs**: May require multiple runs if classical checks on $N, a$ or $r$ fail
 
-## Mathematical Background
+## Project Structure
 
-The algorithm relies on the mathematical relationship:
 ```
-If a^r = 1 mod N, then a^(r/2) ± 1 gives are the two prime factors
+Shors_Algorithm_Simulation/
+├── LICENSE                               # MIT License text
+├── requirements.txt                      # Packages required to be installed
+├── README.md                             # This file
+├── THEORY.md                             # File explaining the physics of the algorithm
+├── images                                # Runtime graph
+│   └── 
+├── src/                                  # Source code
+│   ├── classical_parts/
+│   │   ├── pre_checks/
+│   │   └── post_checks/
+│   ├── quantum_part/
+│   │   └── quantum_part/
+│   └── plotters/
+│       ├── probability_plot/
+│       └── runtime_plot/
+└── tests/
+│   └── return_runtime/
+└── examples/
+    ├── example_15/
+    ├── example_35/
+    ├── example_55/
+    ├── example_91/
+    └── example_143/
 ```
-
-Where:
-- $N$ is the semiprime (factor of two primes)
-- $a$ is a randomly chosen integer less than $N$
-- $r$ is the period of the function ```f(x) = a^x mod N```
 
 ## Educational Resources
 
@@ -86,7 +116,7 @@ This implementation is inspired by the original work of Peter Shor and serves as
 ---
 
 **Note**: This is a classical simulation for educational purposes.
-Real quantum advantage requires actual quantum hardware or quantum simulators that can handle the exponential complexity efficiently.
+Real quantum advantage requires actual quantum hardware that can efficiently implement this factorisation algorithm in polynomial (in $log(N)$) time.
 
 ---
 
