@@ -11,7 +11,7 @@ def is_perfect_power(N):
     return False, None, None
 
 
-def pre_checks(N):
+def pre_checks(N, a=None):
     """
     Performs classical checks for Shor's algorithm.
 
@@ -30,18 +30,22 @@ def pre_checks(N):
     is_power, base, exponent = is_perfect_power(N)
     if is_power:
         factors = (base, N // base)
-        message = (f'N is a perfect power: {N} = {base}^{exponent}. Base factor is {base}'
+        message = (f'N is a perfect power: {N} = {base}^{exponent}.'
                    f'\nClassical methods found factors!\nNo quantum computation needed.')
         return True, factors, message
 
-    # Generate random integer between 2 and N - 1
-    a = randint(2, N - 1)
+    # Use provided a or random integer between 2 and N - 1
+    if a is not None:
+        a = a
+    else:
+        a = randint(2, N - 1)  # Generate random a
 
     # Check if gcd(a, N) > 1
     gcd_val = np.gcd(a, N)
     if gcd_val != 1:
         factors = (gcd_val, N // gcd_val)
-        message = (f'Lucky! gcd({a}, {N}) = {gcd_val}. The factors of N are: {gcd_val} and {N // gcd_val}'
+        message = (f'gcd(N, a) = gcd({N}, {a}) = {gcd_val}.\n'
+                   f'The factors of N are: {gcd_val} and {N // gcd_val}'
                    f'\nClassical methods found factors!\nNo quantum computation needed.')
         return True, factors, message
 
