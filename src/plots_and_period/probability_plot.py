@@ -1,9 +1,10 @@
-#import numpy as np
+import numpy as np
+from math import log2, ceil
 import matplotlib.pyplot as plt
-from src.quantum_part.quantum_part import run_quantum_gates
+from src.quantum_part.run_quantum_gates import run_quantum_gates
 
 
-def plot_first_register_probabilities(N, a):
+def plot_probs(N, a):
     """
     Plot the first register probabilities.
 
@@ -12,19 +13,29 @@ def plot_first_register_probabilities(N, a):
         a: Base for the modular exponentiation
     """
 
+    n_qubits = ceil(log2(N))
+    M = 2 ** n_qubits
+
     # Run the quantum algorithm
-    prob_first_register, M, _ = run_quantum_gates(N, a)
+    phi = run_quantum_gates(N, a)
+
+    # Extract the first register state probabilities
+    # (A real implementation of Shor's algorithm would instead make a measurement of the first register.)
+    prob_first_register = np.zeros(M)
+    for x in range(M):
+        for y in range(M):
+            state_index = x * M + y
+            prob_first_register[x] += np.abs(phi[state_index]) ** 2
 
     # Create the plot
     plt.figure(figsize=(10, 6))
-    first_reg_states = range(M)
-    plt.bar(first_reg_states, prob_first_register, alpha=0.7,
+    plt.bar(range(M), prob_first_register, alpha=0.7,
             color='lightcoral', edgecolor='darkred')
     plt.xlabel('First Register State |x⟩')
     plt.ylabel('Probability')
     plt.title(f'First Register Measurement Probabilities\n(Period detection for N={N}, a={a})')
     plt.grid(True, alpha=0.3)
-    plt.xticks(first_reg_states, [f'|{x}⟩' for x in range(M)])
+    plt.xticks(range(M), [f'|{x}⟩' for x in range(M)])
 
     # # Add probability values on bars
     # for i, prob in enumerate(prob_first_register):
@@ -33,14 +44,5 @@ def plot_first_register_probabilities(N, a):
 
     plt.tight_layout()
     plt.show()
-
-    # Print analysis
-    print(f"\n--- Shor's Algorithm Analysis ---")
-    print(f"N = {N}, a = {a}")
-
-    # # Find the most probable states
-    # max_prob_indices = np.where(prob_first_register == np.max(prob_first_register))[0]
-    # print(f"\nMost probable measurement outcomes: {max_prob_indices}")
-    # print(f"Maximum probability: {np.max(prob_first_register):.4f}")
 
     return prob_first_register

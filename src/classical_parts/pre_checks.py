@@ -22,14 +22,16 @@ def pre_checks(N):
     # Check if N is even
     if N % 2 == 0:
         factors = (2, N // 2)
-        message = f'N is even. The factors are 2 and {N // 2}'
+        message = (f'N is even. The factors are 2 and {N // 2}'
+                   f'\nClassical methods found factors!\nNo quantum computation needed.')
         return True, factors, message
 
     # Check if N is a perfect power
     is_power, base, exponent = is_perfect_power(N)
     if is_power:
         factors = (base, N // base)
-        message = f'N is a perfect power: {N} = {base}^{exponent}. Base factor is {base}'
+        message = (f'N is a perfect power: {N} = {base}^{exponent}. Base factor is {base}'
+                   f'\nClassical methods found factors!\nNo quantum computation needed.')
         return True, factors, message
 
     # Generate random integer between 2 and N - 1
@@ -39,8 +41,11 @@ def pre_checks(N):
     gcd_val = np.gcd(a, N)
     if gcd_val != 1:
         factors = (gcd_val, N // gcd_val)
-        message = f'Lucky! gcd({a}, {N}) = {gcd_val}. The factors of N are: {gcd_val} and {N // gcd_val}'
+        message = (f'Lucky! gcd({a}, {N}) = {gcd_val}. The factors of N are: {gcd_val} and {N // gcd_val}'
+                   f'\nClassical methods found factors!\nNo quantum computation needed.')
         return True, factors, message
+
     else:
-        message = f'Classical checks passed with a = {a}.'
+        message = (f'Classical checks passed.'
+                   f'\na = {a}.')
         return False, a, message
