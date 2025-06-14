@@ -25,20 +25,20 @@ def run_runtime_analysis(repeats=3):
     # Choose a values that are coprime to N for non-trivial Shor's algorithm runs
     test_cases = [
         (15, 7),  # 3 * 5, period = 4
-        # (21, 8),  # 3 * 7, period = 2
-        # (33, 10),  # 3 * 11, period = 10
-        # (35, 6),  # 5 * 7, period = 4
+        (21, 8),  # 3 * 7, period = 2
+        (33, 10),  # 3 * 11, period = 10
+        (35, 6),  # 5 * 7, period = 4
         (51, 8),  # 3 * 17, period = 8
-        # (55, 7),  # 5 * 11, period = 10
-        # (77, 8),  # 7 * 11, period = 10
-        # (91, 6),  # 7 * 13, period = 12
-        # (95, 3),  # 5 * 19, period = 18
-        (115, 2),  # 5 * 23, try a=2 (period likely smaller than a=3)
-        # (143, 2),  # 11 * 13, a=2 should give smaller period than a=5
-        (209, 2),  # 11 * 19, a=2 typically has smaller periods
-        (253, 2),  # 11 * 23, a=2 should be better than a=7
-        # (323, 2),  # 17 * 19, a=2 should work better than a=5
-        # (391, 2),  # 17 * 23, a=2 likely better than a=6
+        (55, 7),  # 5 * 11, period = 10
+        (77, 8),  # 7 * 11, period = 10
+        (91, 6),  # 7 * 13, period = 12
+        (95, 3),  # 5 * 19, period = 18
+        (115, 3),  # 5 * 23
+        # (143, 5),  # 8 qubits
+        # (209, 6),  # 8 qubits
+        # (253, 7),  # 8 qubits
+        # (323, 5),  # 9 qubits (17×19)
+        # (391, 6),  # 9 qubits (17×23)
     ]
 
     N_values = []
