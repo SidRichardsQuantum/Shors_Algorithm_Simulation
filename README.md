@@ -40,12 +40,13 @@ pip install -r requirements.txt
 ## Implementation Details
 
 - $N$ is the semiprime (factor of two primes)
-- $a$ is a randomly chosen integer less than $N$
-- $r$ is the period of the function ```f(x) = a^x mod N```
+- $a$ is an integer between $1$ and $N$
+- $r$ is the period of the modular function ```f(x) = a^x mod N```
 
 ### Classical Checks
 - Checks that $N$ is not trivial (even or a perfect power)
-- Generates a random integer ```2 ≤ a < N``` that is not a factor of $N$
+- If $a$ is not specified, then a random integer is generated
+- Checks that ```gcd(a, N) = 1```
 
 ### Quantum Register Simulation
 - Uses complex numpy arrays to represent quantum state vectors
@@ -60,7 +61,7 @@ pip install -r requirements.txt
 - Analyzes measurement probabilities to find period candidates
 - Checks that $r$ is even
 - Calculates both prime factors $p$ and $q$
-- Verifies $N = p * q$
+- Verifies that $p$ and $q$ are non-trivial
 
 ### Graphs
 
