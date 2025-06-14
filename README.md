@@ -78,29 +78,30 @@ pip install -r requirements.txt
 
 ```
 Shors_Algorithm_Simulation/
-├── LICENSE                               # MIT License text
-├── requirements.txt                      # Packages required to be installed
-├── README.md                             # This file
-├── THEORY.md                             # File explaining the physics of the algorithm
-├── images                                # Runtime graph
-│   └── 
-├── src/                                  # Source code
+├── LICENSE                        # Project license
+├── requirements.txt               # Python dependencies
+├── README.md                      # This file
+├── THEORY.md                      # Theoretical background and explanations
+├── main.py                        # Main entry point for the simulation
+├── src/
+│   ├── __init__.py                # Makes src a package
 │   ├── classical_parts/
-│   │   ├── pre_checks/
-│   │   └── post_checks/
-│   ├── quantum_part/
-│   │   └── quantum_part/
-│   └── plotters/
-│       ├── probability_plot/
-│       └── runtime_plot/
-└── tests/
-│   └── return_runtime/
+│   │   ├── __init__.py
+│   │   ├── post_checks.py         # Post-quantum verification functions
+│   │   └── pre_checks.py          # Pre-quantum validation functions
+│   ├── plots_and_period/
+│   │   ├── __init__.py
+│   │   ├── find_period.py         # Period finding algorithms
+│   │   └── probability_plot.py    # Quantum state probability visualization
+│   └── quantum_part/
+│       ├── __init__.py
+│       ├── hadamard_matrix.py     # Hadamard gate implementations
+│       ├── iqft_matrix.py         # Inverse Quantum Fourier Transform
+│       ├── oracle_matrix.py       # Quantum oracle implementations
+│       └── run_quantum_gates.py   # Quantum circuit execution
 └── examples/
-    ├── example_15/
-    ├── example_35/
-    ├── example_55/
-    ├── example_91/
-    └── example_143/
+    ├── __init__.py
+    └── example_15.py              # Example implementation for factoring 15
 ```
 
 ## Educational Resources
