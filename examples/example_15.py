@@ -1,4 +1,4 @@
-from src.main import shors_simulation
+from main import shors_simulation
 
 
 if __name__ == "__main__":
