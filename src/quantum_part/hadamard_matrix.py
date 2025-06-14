@@ -32,7 +32,7 @@ def hadamard_matrix(n_qubits):
 def hadamard_matrix_efficient(n_qubits):
     """
     More efficient construction using the fact that H^⊗n has a known structure.
-    The n-qubit Hadamard matrix can be constructed more efficiently.
+
     H^⊗n has entries: H[i,j] = (-1)^(i·j) / sqrt(2^n),
     where i·j is the bitwise dot product.
     """

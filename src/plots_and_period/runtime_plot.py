@@ -22,7 +22,7 @@ def run_runtime_analysis(repeats=3):
     """Run Shor's algorithm for different N values and plot runtimes."""
 
     # Test cases: (N, a) pairs
-    # Choose a values that are coprime to N for non-trivial Shor's algorithm runs
+    # Choose a values that are coprime to N for non-trivial runs
     test_cases = [
         (15, 7),  # 3 * 5, period = 4
         (21, 8),  # 3 * 7, period = 2
@@ -31,9 +31,9 @@ def run_runtime_analysis(repeats=3):
         (51, 8),  # 3 * 17, period = 8
         (55, 7),  # 5 * 11, period = 10
         (77, 8),  # 7 * 11, period = 10
-        (91, 6),  # 7 * 13, period = 12
-        (95, 3),  # 5 * 19, period = 18
-        (115, 3),  # 5 * 23
+        # (91, 6),  # 7 * 13, period = 12
+        # (95, 3),  # 5 * 19, period = 18
+        # (115, 3),  # 5 * 23
         # (143, 5),  # 8 qubits
         # (209, 6),  # 8 qubits
         # (253, 7),  # 8 qubits

@@ -27,7 +27,7 @@ def run_quantum_gates(N, a, sparse=True):
     phi = np.zeros(M ** 2, dtype=complex)
     phi[0] = 1.0
 
-    if sparse:
+    if sparse:  #Sparse matrices
         # Apply Hadamard matrix
         H = hadamard_matrix_efficient(n_qubits)
         phi = H @ phi
@@ -40,7 +40,7 @@ def run_quantum_gates(N, a, sparse=True):
         IQFT = iqft_matrix_sparse(M)
         phi = IQFT @ phi
 
-    else:
+    else:  # Dense matrices
         # Apply Hadamard matrix
         H = hadamard_matrix(n_qubits)
         phi = H @ phi
