@@ -1,13 +1,16 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import numpy as np
 import matplotlib.pyplot as plt
 import time
 from main import shors_simulation
+
 # Set matplotlib backend for Codespaces
 import matplotlib
 matplotlib.use('Agg') # Use non-interactive backend
+
 
 def calculate_qubits_required(N):
     """Calculate the number of qubits required for Shor's algorithm on N."""
@@ -15,6 +18,7 @@ def calculate_qubits_required(N):
     # This is a simplified estimation - the actual implementation might vary
     import math
     return 2 * math.ceil(math.log2(N))
+
 
 def time_shor_simulation(N, a, sparse=True):
     """Time a single Shor's algorithm simulation."""
@@ -26,6 +30,7 @@ def time_shor_simulation(N, a, sparse=True):
     except Exception as e:
         print(f"Error with N={N}, a={a}: {e}")
         return None
+
 
 def run_runtime_analysis(repeats=3, sparse=True):
     """Run Shor's algorithm for different N values and plot runtimes."""
@@ -69,10 +74,9 @@ def run_runtime_analysis(repeats=3, sparse=True):
             std_deviations.append(std_runtime)
             
             print(f"N={N} ({qubits} qubits): Avg: {avg_runtime:.4f}s (±{std_runtime:.4f}s)")
+            print("=" * 40)
         else:
             print(f"N={N}: Failed")
-    
-    print("=" * 40)
     
     # Create the plots
     plt.figure(figsize=(15, 10))
@@ -174,19 +178,3 @@ def run_runtime_analysis(repeats=3, sparse=True):
     plt.close('all')
     
     return N_values, qubits_required, runtimes, std_deviations
-
-
-if __name__ == "__main__":
-    try:
-        N_vals, qubits, times, stds = run_runtime_analysis(3, sparse=True)
-        print("\nRuntime analysis complete!")
-        
-        # Print summary statistics
-        print(f"\nSummary:")
-        print(f"N values tested: {N_vals}")
-        print(f"Qubits required: {qubits}")
-        
-    except KeyboardInterrupt:
-        print("\nAnalysis interrupted by user.")
-    except Exception as e:
-        print(f"Error during analysis: {e}")

@@ -5,4 +5,5 @@ from main import shors_simulation
 
 
 if __name__ == "__main__":
-    shors_simulation(N=21, a=2, show_plots=True, sparse=True)
+    """Default example N = 15 with a = 7"""
+    shors_simulation(N=15, a=7, show_plots=True, sparse=True)
