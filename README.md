@@ -16,7 +16,7 @@ We will use Qiskit to draw the quantum circuit, but nothing more.
 2. **Quantum Register Setup**: Creates two qubit registers
 3. **Equal Superposition**: Applies Hadamard gates to the first register to create quantum superposition with equal amplitudes
 4. **Modular Exponentiation**: Implements an oracle unitary matrix to entangle the registers
-5. **Quantum Fourier Transform**: Applies an inverse QFT matrix to extract period information
+5. **IQFT**: Applies an Inverse Quantum Fourier Transform matrix to extract period information
 6. **Period Finding**: Analyzes measurement probabilities to determine period
 7. **Classical Post-Processing**: Uses the period to calculate prime factors
 
@@ -41,12 +41,12 @@ pip install -r requirements.txt
 
 - $N$ is the semiprime (factor of two primes)
 - $a$ is an integer between $1$ and $N$
-- $r$ is the period of the modular function ```f(x) = a^x mod N```
+- $r$ is the period of the modular function ```a^x mod N```
 
 ### Classical Checks
 - Checks that $N$ is not trivial (even or a perfect power)
 - If $a$ is not specified, then a random integer is generated
-- Checks that ```gcd(a, N) = 1```
+- Verifies that ```gcd(a, N) = 1```
 
 ### Quantum Register Simulation
 - Uses complex numpy arrays to represent quantum state vectors
@@ -55,23 +55,23 @@ pip install -r requirements.txt
 ### Quantum Gates
 - **Hadamard**: Creates an equal superposition of all states in the first register
 - **Unitary Oracle**: Implements modular exponentiation oracle to entangle the registers
-- **Inverse QFT**: Extracts period information from quantum state
+- **IQFT**: Extracts period information from quantum state
 
 ### Classical Post-Processing
 - Analyzes measurement probabilities to find period candidates
 - Checks that $r$ is even
-- Calculates both prime factors $p$ and $q$
-- Verifies that $p$ and $q$ are non-trivial
+- Calculates prime factors $gcd(a^{r/2} \pm 1, N)$
+- Verifies the factors are non-trivial ($N$ and $1$)
 
 ### Graphs
 
 - After applying the IQFT matrix, we plot the state probabilities against state-index to display periodicity
-- Runtime can be plotted against semiprimes to show the exponential nature of this classical simulation
+- Runtime is plotted against semiprimes and required qubits to show the exponential time-complexity
 
 ## Limitations
 
 - **Exponential Memory**: Classical simulation runtime is (sub-)exponential for factorisation problems
-- **Small Numbers Only**: Practical for factoring small integers ($N < 100$) using few qubits
+- **Small Numbers Only**: Practical for factoring small integers ($N < 300$) using few qubits
 - **Educational Purpose**: Not suitable for large numbers practically used for RSA
 - **Multiple Runs**: May require multiple runs if classical checks on $N, a$ or $r$ fail
 
