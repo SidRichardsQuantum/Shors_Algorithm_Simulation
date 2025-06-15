@@ -61,8 +61,10 @@ In a real implementation of Shor's algorithm, a measurement of the first registe
 
 ## Classical Post Processing
 
-For us to have $(a^{r/2} \pm 1)$, $r$ must be even.
+$r$ must be even to calculate $(a^{r/2} \pm 1)$.
 If $r$ is not even, the algorithm needs to be restarted with a different random integer $a$.
+
+We then 
 
 ## Default Example
 
