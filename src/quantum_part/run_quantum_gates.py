@@ -1,7 +1,7 @@
 import numpy as np
 from math import log2, ceil
-from quantum_part.hadamard_matrix import hadamard_matrix_efficient, hadamard_matrix
-from quantum_part.oracle_matrix import oracle_matrix_sparse, oracle_matrix
+from src.quantum_part.hadamard_matrix import hadamard_matrix_efficient, hadamard_matrix
+from src.quantum_part.oracle_matrix import oracle_matrix_sparse, oracle_matrix
 from src.quantum_part.iqft_matrix import iqft_matrix, iqft_matrix_sparse
 
 

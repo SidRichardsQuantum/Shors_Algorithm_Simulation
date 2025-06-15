@@ -27,11 +27,12 @@ def post_checks(N, a, r):
                        f'\na^(r/2) + 1 = {temp1}, gcd({temp1}, {N}) = {factor1}'
                        f'\na^(r/2) - 1 = {temp2}, gcd({temp2}, {N}) = {factor2}'
                        f'\nThe factors of N = {N} are {factors[0]} and {factors[1]}.')
+            print("-" * 40)
 
         else:
             message = (f'r = {r} is even, however:'
                        f'\na^(r/2) + 1 = {temp1}, gcd({temp1}, {N}) = {factor1}... This is N.'
-                       f'\nWe have found the trivial factors {15} and {1}.'
+                       f'\nWe have found the trivial factors {N} and {1}.'
                        f'\nTry a value of a != {a}.')
 
     else:  # r is ODD
