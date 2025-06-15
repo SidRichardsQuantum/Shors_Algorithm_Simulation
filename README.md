@@ -78,31 +78,34 @@ pip install -r requirements.txt
 ## Project Structure
 
 ```
-Shors_Algorithm_Simulation/
-├── LICENSE                        # Project license
-├── requirements.txt               # Python dependencies
-├── README.md                      # This file
-├── THEORY.md                      # Theoretical background and explanations
-├── main.py                        # Main entry point for the simulation
-├── src/
-│   ├── __init__.py                # Makes src a package
-│   ├── classical_parts/
-│   │   ├── __init__.py
-│   │   ├── post_checks.py         # Post-quantum verification functions
-│   │   └── pre_checks.py          # Pre-quantum validation functions
-│   ├── plots_and_period/
-│   │   ├── __init__.py
-│   │   ├── find_period.py         # Period finding algorithms
-│   │   └── probability_plot.py    # Quantum state probability visualization
-│   └── quantum_part/
-│       ├── __init__.py
-│       ├── hadamard_matrix.py     # Hadamard gate implementations
-│       ├── iqft_matrix.py         # Inverse Quantum Fourier Transform
-│       ├── oracle_matrix.py       # Quantum oracle implementations
-│       └── run_quantum_gates.py   # Quantum circuit execution
-└── examples/
-    ├── __init__.py
-    └── example_15.py              # Example implementation for factoring 15
+Shors_Algorithm_Simulation
+├── LICENSE                       # Project license
+├── requirements.txt              # Python dependencies
+├── README.md                     # This file
+├── THEORY.md                     # Theoretical background
+├── main.py                       # Main execution script
+├── examples/                     # Example usage and demonstrations
+│   ├── __init__.py
+│   ├── example_15.py             # Default example
+│   └── runtimes_test.py          # Runtime performance testing
+├── images/                       # Generated visualizations of examples
+└── src/                          # Source code
+    ├── __init__.py               # Main package initialization
+    ├── classical_parts/          # Classical algorithm components
+    │   ├── __init__.py
+    │   ├── pre_checks.py         # Pre-quantum validation
+    │   └── post_checks.py        # Post-quantum validation
+    ├── plots_and_period/         # Visualization and period finding
+    │   ├── __init__.py
+    │   ├── find_period.py        # Period finding function
+    │   ├── probability_plot.py   # Probability visualization
+    │   └── runtime_plot.py       # Runtime analysis plots
+    └── quantum_part/             # Quantum operators
+        ├── __init__.py
+        ├── hadamard_matrix.py    # Hadamard gate implementation
+        ├── oracle_matrix.py      # Modular exponentiation oracle
+        ├── iqft_matrix.py        # Inverse QFT implementation
+        └── run_quantum_gates.py  # Quantum circuit execution
 ```
 
 ## Educational Resources
