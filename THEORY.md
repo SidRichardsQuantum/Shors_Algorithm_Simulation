@@ -61,10 +61,9 @@ In a real implementation of Shor's algorithm, a measurement of the first registe
 
 ## Classical Post Processing
 
-$r$ must be even to calculate $(a^{r/2} \pm 1)$.
+$r$ must be even to calculate the factors $(a^{r/2} \pm 1)$.
 If $r$ is not even, the algorithm needs to be restarted with a different random integer $a$.
-
-We then 
+We then verify that the factors returned aren't trivially $N$ and $1$.
 
 ## Default Example
 
@@ -107,7 +106,7 @@ Writing the oracle unitary operator as:
 ```
 U = ∑∑(|x⟩|(y + a ** x) mod N⟩⟨y|⟨x|)
 ```
-where both $\Sigma$s run from $0$ to $2^n - 1 = 15$; we can see that this maps:
+where both $∑$ run from $0$ to $2^n - 1 = 15$; we can see that this maps:
 ```
 |0⟩|y⟩ → |0⟩|y + 1⟩
 |1⟩|y⟩ → |1⟩|y + 7⟩
