@@ -46,4 +46,5 @@ def shors_simulation(N=15, a=None, show_plots=True, sparse=True):
         print(result)
 
         # Now show the plot
-        plot_probs(N, a, probabilities, show_plots=show_plots)
+        plot_probs(N, a, probabilities, show_plots=show_plots, sparse=sparse)
+    

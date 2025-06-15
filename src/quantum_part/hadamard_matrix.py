@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.sparse import csr_matrix
 
 
 def hadamard_matrix(n_qubits):
@@ -28,32 +29,54 @@ def hadamard_matrix(n_qubits):
     return H_total_register
 
 
-# More efficient construction using properties of Kronecker products
-def hadamard_matrix_efficient(n_qubits):
+def hadamard_matrix_sparse(n_qubits):
     """
-    More efficient construction using the fact that H^⊗n has a known structure.
-
-    H^⊗n has entries: H[i,j] = (-1)^(i·j) / sqrt(2^n),
-    where i·j is the bitwise dot product.
+    Efficient sparse matrix version of Hadamard operator for large n_qubits.
+    
+    Hadamard operation: |x⟩|y⟩ → (2^(-M/2)) Σ_z (-1)^(x·z) |z⟩|y⟩
     """
 
-    def bitwise_dot_product(a, b, n_bits):
-        """Compute bitwise dot product of two integers"""
-        return bin(a & b).count('1') % 2
-
-    # Create the first register Hadamard matrix efficiently
     M = 2 ** n_qubits
-    H_first = np.zeros((M, M), dtype=complex)
-    factor = 1.0 / np.sqrt(M)
-
-    for i in range(M):
-        for j in range(M):
-            H_first[i, j] = (-1) ** bitwise_dot_product(i, j, n_qubits) * factor
-
-    # Identity for second register
-    I_second = np.eye(M, dtype=complex)
-
-    # Total Hadamard operation
-    H_total = np.kron(H_first, I_second)
-
-    return H_total
+    total_size = M ** 2
+    
+    # Create arrays for all possible input states
+    input_states = np.arange(total_size)
+    
+    # Extract x and y from input states: input_state = x * M + y
+    x_vals = input_states // M
+    y_vals = input_states % M
+    
+    # For each input state |x⟩|y⟩, we need M output states |z⟩|y⟩ for all z
+    # Create arrays to store row indices, column indices, and data
+    row_indices = []
+    col_indices = []
+    data_values = []
+    
+    normalization = 1.0 / np.sqrt(2 ** n_qubits)
+    
+    for input_idx in range(total_size):
+        x = input_idx // M
+        y = input_idx % M
+        
+        # For this input state |x⟩|y⟩, create superposition over all |z⟩|y⟩
+        for z in range(M):
+            output_idx = z * M + y
+            
+            # Compute phase factor (-1)^(x·z) where · is bitwise dot product
+            phase = (-1) ** bin(x & z).count('1')
+            amplitude = normalization * phase
+            
+            row_indices.append(output_idx)
+            col_indices.append(input_idx)
+            data_values.append(amplitude)
+    
+    # Convert to numpy arrays
+    row_indices = np.array(row_indices)
+    col_indices = np.array(col_indices)
+    data_values = np.array(data_values, dtype=complex)
+    
+    # Create sparse matrix
+    H_sparse = csr_matrix((data_values, (row_indices, col_indices)),
+                          shape=(total_size, total_size))
+    
+    return H_sparse

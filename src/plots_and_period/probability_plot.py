@@ -1,7 +1,15 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import numpy as np
-from math import log2, ceil
 import matplotlib.pyplot as plt
+from math import log2, ceil
 from src.quantum_part.run_quantum_gates import run_quantum_gates
+
+# Set matplotlib backend for Codespaces
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
 
 
 def compute_probs(N, a, sparse=True):
@@ -23,7 +31,7 @@ def compute_probs(N, a, sparse=True):
 
     return prob_first_register
 
-def plot_probs(N, a, prob_first_register, show_plots=True):
+def plot_probs(N, a, prob_first_register, show_plots=True, sparse=True):
     """
     Plot the probabilities that were already computed.
     """
@@ -39,8 +47,18 @@ def plot_probs(N, a, prob_first_register, show_plots=True):
     plt.grid(True, alpha=0.3)
     plt.xticks(range(0, M, n_qubits // 2), [f'|{x}⟩' for x in range(0, M, n_qubits // 2)])
     plt.tight_layout()
+    print('-' * 40)
 
     if show_plots:
-        plt.show()  # Only show if requested
+        # plt.show()  # Only show if requested
+
+        # Save the plot instead of showing it
+        output_file = f'images/first_register_probabilities_sparse_{sparse}.png'
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"\nPlot saved as: {output_file}")
+
+        # Close the figure to free memory
+        plt.close()
+    
     else:
         plt.close()

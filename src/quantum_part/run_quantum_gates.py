@@ -1,6 +1,6 @@
 import numpy as np
 from math import log2, ceil
-from src.quantum_part.hadamard_matrix import hadamard_matrix_efficient, hadamard_matrix
+from src.quantum_part.hadamard_matrix import hadamard_matrix_sparse, hadamard_matrix
 from src.quantum_part.oracle_matrix import oracle_matrix_sparse, oracle_matrix
 from src.quantum_part.iqft_matrix import iqft_matrix, iqft_matrix_sparse
 
@@ -29,7 +29,7 @@ def run_quantum_gates(N, a, sparse=True):
 
     if sparse:  #Sparse matrices
         # Apply Hadamard matrix
-        H = hadamard_matrix_efficient(n_qubits)
+        H = hadamard_matrix_sparse(n_qubits)
         phi = H @ phi
 
         # Apply oracle matrix
