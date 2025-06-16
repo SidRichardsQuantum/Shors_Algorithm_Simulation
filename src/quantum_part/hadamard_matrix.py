@@ -31,7 +31,7 @@ def hadamard_matrix(n_qubits):
 
 def hadamard_matrix_sparse(n_qubits):
     """
-    Efficient sparse matrix version of Hadamard operator for large n_qubits.
+    Efficient sparse matrix version of Hadamard operator.
     
     Hadamard operation: |x⟩|y⟩ → (2^(-M/2)) Σ_z (-1)^(x·z) |z⟩|y⟩
     """
