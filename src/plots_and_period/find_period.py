@@ -12,7 +12,7 @@ def find_period(N, a, sparse=True):
     M = 2 ** n_qubits
     
     # Calculate mean probability
-    prob_first_register = compute_probs(N, a, sparse=True)  # Just compute, don't plot
+    prob_first_register = compute_probs(N, a, sparse)  # Just compute, don't plot
     mean_prob = np.mean(prob_first_register)
     
     # Find indices where probability is above the mean
