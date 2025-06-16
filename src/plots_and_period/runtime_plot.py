@@ -41,7 +41,7 @@ def run_runtime_analysis(repeats=3, sparse=True):
         (21, 2),   # 3 * 7, 10 qubits
         (35, 2),   # 5 * 7, 12 qubits
         (55, 2),   # 5 * 11, 12 qubits
-        (77, 6),   # 7 * 11, 14 qubits
+        (77, 2),   # 7 * 11, 14 qubits
         (91, 5),   # 7 * 13, 14 qubits
         (115, 2),  # 5 * 23, 14 qubits
         (161, 6)   # 7 * 23, 16 qubits
