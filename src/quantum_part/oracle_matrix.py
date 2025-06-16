@@ -24,7 +24,7 @@ def oracle_matrix(N, a):
 
 
 def oracle_matrix_sparse(N, a):
-    """Even more efficient version using sparse matrices for large N."""
+    """Even more efficient version using sparse matrices."""
 
     n_qubits = ceil(log2(N))
     M = 2 ** n_qubits
