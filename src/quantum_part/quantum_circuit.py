@@ -25,4 +25,5 @@ qc.append(U, list(reg1) + list(reg2))
 qc.iqft = QFT(N, inverse=True)
 qc.append(iqft, reg1)
 
-print(qc.draw())
+# Saves to images directory
+qc.draw(output='mpl', filename='images/quantum_circuit.png')
