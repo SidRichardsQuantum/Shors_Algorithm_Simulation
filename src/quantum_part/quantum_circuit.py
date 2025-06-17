@@ -23,7 +23,7 @@ qc.append(U, list(reg1) + list(reg2))
 
 # IQFT gate on the 1st register only
 qc.iqft = QFT(N, inverse=True)
-qc.append(iqft, reg1)
+qc.append(qc.iqft, reg1)
 
 # Saves to images directory
 qc.draw(output='mpl', filename='images/quantum_circuit.png')
