@@ -8,7 +8,7 @@ This project demonstrates the core concepts of Shor's algorithm without relying 
 Shor's algorithm is a quantum algorithm that efficiently finds the prime factors of large integers, which forms the basis for breaking RSA encryption.
 This implementation simulates the quantum operations classically to illustrate how the algorithm works step-by-step.
 
-We will use Qiskit to draw the quantum circuit, but nothing more.
+See [THEORY.md](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/blob/main/THEORY.md) for a descriptive algorithm walkthrough.
 
 ## Algorithm Steps
 
@@ -20,7 +20,9 @@ We will use Qiskit to draw the quantum circuit, but nothing more.
 6. **Period Finding**: Analyzes measurement probabilities to determine period
 7. **Classical Post-Processing**: Uses the period to calculate prime factors
 
-See THEORY.md for a descriptive algorithm walkthrough.
+A quantum circuit for Shor's Algorithm using 8 qubits (only utilisation of qiskit in this project):
+
+![quantum_circuit](images/quantum_circuit.png)
 
 ## Features
 
