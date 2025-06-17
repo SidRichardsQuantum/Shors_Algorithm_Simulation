@@ -23,9 +23,12 @@ def run_quantum_gates(N, a, sparse=True):
     n_qubits = ceil(log2(N))
     M = 2 ** n_qubits
 
-    # Initialize state |0⟩|0⟩
-    phi = np.zeros(M ** 2, dtype=complex)
-    phi[0] = 1.0
+    # Initialize state |0⟩|1⟩
+    phi1 = np.zeros(M, dtype=complex)
+    phi2 = np.zeros(M, dtype=complex)
+    phi1[0] = 1.0
+    phi2[1] = 1.0
+    phi = np.kron(phi1, phi2)
 
     if sparse:  #Sparse matrices
         # Apply Hadamard matrix

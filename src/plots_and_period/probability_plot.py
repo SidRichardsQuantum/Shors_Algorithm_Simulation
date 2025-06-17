@@ -53,7 +53,7 @@ def plot_probs(N, a, prob_first_register, show_plots=True, sparse=True):
         # plt.show()  # Only show if requested
 
         # Save the plot instead of showing it
-        output_file = f'images/first_register_probabilities_sparse_{sparse}.png'
+        output_file = f'images/first_register_probabilities_N={N}_a={a}.png'
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         print(f"\nPlot saved as: {output_file}")
 
