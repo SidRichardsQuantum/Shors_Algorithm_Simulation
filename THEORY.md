@@ -1,15 +1,18 @@
 # Theory
 
-A semiprime $N$ is the product of two primes $p$ and $q$.
-For any integer $a < N$, the remainder when $a^x$ is divided by $N$, has period $r$ such that:
+A semiprime $N$ is the product of two primes.
+For any integer $a < N$, the remainder when $a^b$ is divided by $N$, has period $r$ such that:
 ```
-a ** (x + r) - a ** (x) = 0 mod N
+a^(b+r) - a^b ≡ 0 (mod N)
 ```
-Setting $x = 0$ gives ```a ** r = 1 mod N```, which can be rearranged to write $N$ as a product of two smaller factors:
+Setting $b = 0$ allows us to write $N$ as a product of two smaller factors:
 ```
-(a ** (r / 2) + 1)(a ** (r / 2) - 1) = 0 mod N = N mod N
+a^r ≡ 1 (mod N)
+a^r - 1 ≡ 0 (mod N)
+(a^(r/2))^2 - 1 ≡ 0 (mod N)
+(a^(r/2) - 1)(a^(r/2) + 1) ≡ 0 (mod N)
 ```
-given that $r$ is even.
+Therefore, we can find the factors of $N$ from by finding $r$ (given that $r$ is even).
 
 This makes factoring $N$ a period-finding problem, which Shor's algorithm solves in polynomial time.
 Classical factorisation algorithms are exponentially complex for increasing $N$.
