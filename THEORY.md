@@ -25,7 +25,7 @@ Classical computers would take billions of years to break RSA-2048, but a quantu
 There is no point running Shor's algorithm if $N$ is trivially even or a perfect power.
 Therefore, we quickly checks that these conditions are both false.
 
-When we randomly pick a smaller integer $a$, there is a small chance that we directly get $p$ or $q$.
+When we randomly pick a smaller integer $a$, there is a small chance that we directly get one of the factors.
 If this is the case, then we simply pick another random integer until $gcd(a, N) = 1$, meaning $a$ and $N$ are coprime.
 
 If these conditions are satisfied, then we continue to the quantum part.
