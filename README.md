@@ -56,7 +56,7 @@ pip install -r requirements.txt
 **Terminal input**:
 
 ```python
-python src/examples/example_15.py
+python examples/example_15.py
 ```
 
 **Output**:
