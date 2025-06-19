@@ -80,7 +80,17 @@ python src/examples/example_15.py
 
 **Output**:
 
-
+```
+N = 15
+Running Classical Checks...
+Classical checks passed.
+a = 7.
+Proceeding to quantum algorithm...
+The period r = 4 is even.
+a^(r/2) + 1 = 5, and gcd(5, 15) = 5
+a^(r/2) - 1 = 3, and gcd(3, 15) = 3
+The factors of N = 15 are 5 and 3.
+```
 
 ## Limitations
 
