@@ -6,7 +6,7 @@ This project demonstrates the core concepts of Shor's algorithm without relying 
 ## Overview
 
 Shor's algorithm is a quantum algorithm that efficiently finds the prime factors of large integers, which forms the basis for breaking RSA encryption.
-This implementation simulates the quantum operations classically to illustrate how the algorithm works step-by-step.
+This implementation simulates the quantum operations classically, to illustrate how the algorithm works step-by-step in exponential $O(2^{log_2(N)})$ time.
 
 See [THEORY.md](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/blob/main/THEORY.md) for a descriptive algorithm walkthrough.
 
@@ -39,37 +39,6 @@ cd Shors_Algorithm_Simulation
 pip install -r requirements.txt
 ```
 
-## Implementation Details
-
-- $N$ is the semiprime (factor of two primes)
-- $a$ is an integer coprime to $N$, in the interval $[2, N - 1]$
-- $r$ is the period of the modular function $a^x \bmod N$
-
-### Classical Checks
-- Checks that $N$ is not trivial (even or a perfect power)
-- If $a$ is not specified, then a random integer is generated
-- Verifies that ```gcd(a, N) = 1```
-
-### Quantum Register Simulation
-- Uses complex numpy arrays to represent quantum state vectors
-- Implements qubit registers as tensor products of individual qubit states
-
-### Quantum Gates
-- **Hadamard**: Creates an equal superposition of all states in the first register
-- **Unitary Oracle**: Implements modular exponentiation oracle to entangle the registers
-- **IQFT**: Extracts period information from quantum state
-
-### Classical Post-Processing
-- Analyzes measurement probabilities to find period candidates
-- Checks that $r$ is even
-- Calculates prime factors $gcd(a^{r/2} \pm 1, N)$
-- Verifies the factors are non-trivial ($N$ and $1$)
-
-### Graphs
-
-- After applying the IQFT matrix, we plot the state probabilities against state-index to display periodicity
-- Runtime is plotted against semiprimes and required qubits to show the exponential time-complexity
-
 ## Example Usage
 
 **Terminal input**:
@@ -91,10 +60,13 @@ a^(r/2) + 1 = 5, and gcd(5, 15) = 5
 a^(r/2) - 1 = 3, and gcd(3, 15) = 3
 The factors of N = 15 are 5 and 3.
 ```
+This also saves the plot to the "images" directory as "first_register_probabilities_N=15_a=7.png":
+
+![first_register_probabilities_N=15_a=7](images/first_register_probabilities_N=15_a=7.png)
 
 ## Limitations
 
-- **Exponential Memory**: Classical simulation runtime is (sub-)exponential for factorisation problems
+- **Exponential Memory**: Classical simulation runtime is $O(exp(√(log N)))$ (sub-)exponential for factorisation problems
 - **Small Numbers Only**: Practical for factoring small integers ($N < 300$) using few qubits
 - **Educational Purpose**: Not suitable for large numbers practically used for RSA
 - **Multiple Runs**: May require multiple runs if classical checks on $N, a$ or $r$ fail
@@ -145,7 +117,7 @@ This implementation is inspired by the original work of Peter Shor and serves as
 ---
 
 **Note**: This is a classical simulation for educational purposes.
-Real quantum advantage requires actual quantum hardware that can efficiently implement this factorisation algorithm in polynomial (in $log(N)$) time.
+Real quantum advantage requires actual quantum hardware that can efficiently implement this factorisation algorithm in $O((log(N))^3)$) polynomial time.
 
 ---
 
