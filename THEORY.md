@@ -12,7 +12,9 @@ a^r - 1 ≡ 0 (mod N)
 (a^(r/2))^2 - 1 ≡ 0 (mod N)
 (a^(r/2) - 1)(a^(r/2) + 1) ≡ 0 (mod N)
 ```
+Hence $N$ divides the left-hand-side of the last line.
 Therefore, we can find the factors of $N$ from by finding $r$ (given that $r$ is even).
+(It is possible that trivial factors $1$ and $N$ are returned, such that the algorithm needs to be restarted with a different integer $a$.)
 
 This makes factoring $N$ a period-finding problem, which Shor's algorithm solves in polynomial time.
 Classical factorisation algorithms are exponentially complex for increasing $N$.
@@ -35,7 +37,7 @@ If these conditions are satisfied, then we continue to the quantum part.
 Two registers are used.
 The first will be of size $n$, which is the smallest integer such that $2^n \geq N$.
 For this project, the second register will have an equal number of qubits as the first.
-The initial state is set to $|0⟩|0⟩$.
+The initial state is set to $\varphi_0 = |0⟩|1⟩$.
 
 ### Hadamard Gates
 
@@ -47,16 +49,27 @@ H = (1/√2) * [ [1,  1],
 ```
 The Hadamard matrices are then applied to all qubits in the first register by iterating ```numpy.kron()``` - which calculates the Kronecker product of two matrices.
 The full Hadamard matrix is then multiplied with the identity matrix (for the second register), also by using the Kronecker product.
+Applying this to the full register gives:
+```
+|\varphi_1⟩ = (H^{⊗n}⊗I_n)|\varphi_0⟩ = 2^{-n/2} ∑|x⟩|1⟩
+```
 
 ### Modular Oracle
 
 A unitary matrix $U$ which maps $|x⟩|y⟩ \rightarrow |x⟩|(y + a^x) mod N⟩$ is generated.
+Applying this to the wavefuntion to $\varphi_1$ above gives:
+```
+|\varphi_2⟩ = U|\varphi_1⟩ = 2^{-n/2} ∑(|x⟩|(1 + a ** x) mod N⟩
+```
 This leaves the first register unchanged, but entangles it with the second - while encoding periodicity.
 
 ### Inverse Quantum Fourier Transform (IQFT)
 
 An IQFT matrix is constructed to make the amplitudes of the first register states periodic.
-Peaks in probability form at every $2^n * k / r$, where $k$ is a non-negative integer.
+```
+QFT^{-1}|x⟩ = 2^{-n/2} ∑_k exp(2πi * x * k / 2^n)|k⟩
+```
+Peaks in probability form at every $2^n * s / r$, where $s$ is a non-negative integer.
 
 In this project, probabilities are plotted against the state index to find the period $r$.
 In a real implementation of Shor's algorithm, a measurement of the first register would have to be taken for a chance of finding $r$.
