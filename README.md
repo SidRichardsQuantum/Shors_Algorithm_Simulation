@@ -12,7 +12,7 @@ See [THEORY.md](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation
 
 ## Algorithm Steps
 
-1. **Input Validation**: Takes a semiprime and checks that it isn't even or a perfect power
+1. **Input Validation**: Takes a semiprime and checks it isn't even or a perfect square
 2. **Quantum Register Setup**: Creates two qubit registers
 3. **Equal Superposition**: Applies Hadamard gates to the first register to create quantum superposition with equal amplitudes
 4. **Modular Exponentiation**: Implements an oracle unitary matrix to entangle the registers
@@ -34,7 +34,7 @@ A quantum circuit for Shor's Algorithm using 8 qubits (only utilisation of qiski
 ## Installation
 
 ```bash
-git clone https://github.com/SidRichardsQuantum/Shors_Algorithm_simulation
+git clone https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation
 cd Shors_Algorithm_Simulation
 pip install -r requirements.txt
 ```
@@ -42,8 +42,8 @@ pip install -r requirements.txt
 ## Implementation Details
 
 - $N$ is the semiprime (factor of two primes)
-- $a$ is an integer between $1$ and $N$
-- $r$ is the period of the modular function ```a^x mod N```
+- $a$ is an integer coprime to $N$, in the interval $[2, N - 1]$
+- $r$ is the period of the modular function $a^x \bmod N$
 
 ### Classical Checks
 - Checks that $N$ is not trivial (even or a perfect power)
@@ -69,6 +69,18 @@ pip install -r requirements.txt
 
 - After applying the IQFT matrix, we plot the state probabilities against state-index to display periodicity
 - Runtime is plotted against semiprimes and required qubits to show the exponential time-complexity
+
+## Example Usage
+
+**Terminal input**:
+
+```python
+python src/examples/example_15.py
+```
+
+**Output**:
+
+
 
 ## Limitations
 
