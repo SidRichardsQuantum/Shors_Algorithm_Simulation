@@ -71,6 +71,9 @@ Peaks in probability form near states with index $s$, where $s / 2^n \approx t /
 In a real implementation of Shor's algorithm using quantum hardware, a measurement of the first register would have to be taken for a chance of finding $r$.
 (I say "chance", because both $t$ and $r$ might be even - leading to degeneracy in what $r$ could be.)
 
+In this project, the first register state probabilities are plotted against the state index to display the period.
+find_period.py then takes these probabilities and finds $r$ using the differences in state indices which have the highest probabilities.
+
 ## Classical Post Processing
 
 $r$ must be even to calculate the factors $\gcd(a^{r/2} \pm 1, N)$.
@@ -78,7 +81,6 @@ If $r$ is not even, the algorithm needs to be restarted with a different integer
 It is also possible for trivial factors $1$ and $N$ to be returned, such that the algorithm needs to be restarted with a different $a$.
 Otherwise, the non-trivial prime factors are returned.
 
-In this project, the first register state probabilities are plotted against the state index to display the period.
 We also time the algorithm for different pairs of $(N, a)$ and plot runtimes against $N$ and the total number of required qubits $2n$.
 
 # Default Example
