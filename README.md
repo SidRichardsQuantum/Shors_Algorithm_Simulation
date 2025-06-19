@@ -3,10 +3,22 @@
 A pure Python implementation of Shor's quantum factorization algorithm using classical matrix operations to simulate quantum circuits.
 This project demonstrates the core concepts of Shor's algorithm without relying on quantum computing frameworks like Qiskit.
 
+# Table of Contents
+
+1. [Overview](#overview)
+2. [Algorithm Steps](#algorithm-steps)
+3. [Features](#features)
+4. [Installation](#installation)
+5. [Example Usage](#example-usage)
+6. [Limitations](#limitations)
+7. [Project Structure](#project-structure)
+8. [Educational Resources](#educational-resources)
+9. [Acknowledgments](#acknowledgments)
+
 ## Overview
 
 Shor's algorithm is a quantum algorithm that efficiently finds the prime factors of large integers, which forms the basis for breaking RSA encryption.
-This implementation simulates the quantum operations classically, to illustrate how the algorithm works step-by-step in exponential $O(2^{log_2(N)})$ time.
+This implementation simulates the quantum operations classically, to illustrate how the algorithm works step-by-step in exponential $O(2^n)$ time, where $n$ is the total number of qubits required.
 
 See [THEORY.md](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/blob/main/THEORY.md) for a descriptive algorithm walkthrough.
 
@@ -124,3 +136,5 @@ Real quantum advantage requires actual quantum hardware that can efficiently imp
 📘 Author: [Sid Richards]
 
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="20" /> LinkedIn: [https://www.linkedin.com/in/sid-richards-21374b30b/]
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
