@@ -1,26 +1,23 @@
 # Theory
 
 A semiprime $N$ is the product of two primes.
-For any integer $a < N$, the remainder when $a^b$ is divided by $N$, has period $r$ such that:
+For any integer $a < N$ coprime to $N$, and integer $b$, the function $a^x \bmod N$ has period $r$:
 ```
-a^(b+r) - a^b ≡ 0 (mod N)
+a^(b+r) ≡ a^b (mod N)
 ```
-Setting $b = 0$ allows us to write $N$ as a product of two smaller factors:
+Setting $b = 0$ allows us to write $N$ as a product of two factors $\bmod N$:
 ```
 a^r ≡ 1 (mod N)
 a^r - 1 ≡ 0 (mod N)
 (a^(r/2))^2 - 1 ≡ 0 (mod N)
 (a^(r/2) - 1)(a^(r/2) + 1) ≡ 0 (mod N)
 ```
-Hence $N$ divides the left-hand-side of the last line.
-Therefore, we can find the factors of $N$ from by finding $r$ (given that $r$ is even).
-(It is possible that trivial factors $1$ and $N$ are returned, such that the algorithm needs to be restarted with a different integer $a$.)
-
-This makes factoring $N$ a period-finding problem, which Shor's algorithm solves in polynomial time.
-Classical factorisation algorithms are exponentially complex for increasing $N$.
+Hence the two products in the last line divide $N$.
+Therefore, we can find the factors from by finding $r$ (given that it's even).
+This makes factoring $N$ a period-finding problem, which Shor's algorithm solves in polynomial time - exponentially faster than classical algorithms.
 
 RSA encryption involves the generation of a public semiprime key, hence Shor's algorithm can be utilised to find the private decryption key to decrypt the corresponding messages.
-Classical computers would take billions of years to break RSA-2048, but a quantum computer would take weeks!
+Classical computers would take billions of years to break RSA-2048, but a quantum computer would take months!
 
 ## Classical Pre-Processing
 
@@ -28,7 +25,7 @@ There is no point running Shor's algorithm if $N$ is trivially even or a perfect
 Therefore, we quickly checks that these conditions are both false.
 
 When we randomly pick a smaller integer $a$, there is a small chance that we directly get one of the factors.
-If this is the case, then we simply pick another random integer until $gcd(a, N) = 1$, meaning $a$ and $N$ are coprime.
+If this is the case, then we simply pick another random integer until $\gcd(a, N) = 1$, meaning $a$ and $N$ are coprime.
 
 If these conditions are satisfied, then we continue to the quantum part.
 
@@ -37,7 +34,7 @@ If these conditions are satisfied, then we continue to the quantum part.
 Two registers are used.
 The first will be of size $n$, which is the smallest integer such that $2^n \geq N$.
 For this project, the second register will have an equal number of qubits as the first.
-The initial state is set to $\varphi_0 = |0⟩|1⟩$.
+The initial state is set to ```|ψ0⟩ = |0⟩|0⟩```.
 
 ### Hadamard Gates
 
@@ -51,109 +48,113 @@ The Hadamard matrices are then applied to all qubits in the first register by it
 The full Hadamard matrix is then multiplied with the identity matrix (for the second register), also by using the Kronecker product.
 Applying this to the full register gives:
 ```
-|\varphi_1⟩ = (H^{⊗n}⊗I_n)|\varphi_0⟩ = 2^{-n/2} ∑|x⟩|1⟩
+|ψ1⟩ = (H^{⊗n} ⊗ I_n)|ψ0⟩ = (1/√(2^n)) ∑|x⟩|1⟩
 ```
 
 ### Modular Oracle
 
-A unitary matrix $U$ which maps $|x⟩|y⟩ \rightarrow |x⟩|(y + a^x) mod N⟩$ is generated.
-Applying this to the wavefuntion to $\varphi_1$ above gives:
+A unitary matrix $U$ which maps $|x⟩|y⟩ \rightarrow |x⟩|(y + a^x) \bmod N⟩$ is generated.
+Applying this to ```|ψ1⟩``` above gives:
 ```
-|\varphi_2⟩ = U|\varphi_1⟩ = 2^{-n/2} ∑(|x⟩|(1 + a ** x) mod N⟩
+|ψ2⟩ = U|ψ1⟩ = (1/√(2^n)) ∑_x |x⟩|1 + a^x mod N⟩
 ```
-This leaves the first register unchanged, but entangles it with the second - while encoding periodicity.
+This leaves the first register unchanged, but entangles it with the second - encoding periodicity.
 
 ### Inverse Quantum Fourier Transform (IQFT)
 
 An IQFT matrix is constructed to make the amplitudes of the first register states periodic.
 ```
-QFT^{-1}|x⟩ = 2^{-n/2} ∑_k exp(2πi * x * k / 2^n)|k⟩
+QFT^{-1}|x⟩ = (1/√(2^n)) ∑_k exp(2πi * x * k / 2^n)|k⟩
 ```
-Peaks in probability form at every $2^n * s / r$, where $s$ is a non-negative integer.
+Peaks in probability form near states with index $s$, where $s / 2^n \approx t / r$ for integer values of $t$.
 
-In this project, probabilities are plotted against the state index to find the period $r$.
-In a real implementation of Shor's algorithm, a measurement of the first register would have to be taken for a chance of finding $r$.
-(I say "chance", because both $k$ and $r$ might be even - leading to degeneracy in what $r$ could be.)
+In a real implementation of Shor's algorithm using quantum hardware, a measurement of the first register would have to be taken for a chance of finding $r$.
+(I say "chance", because both $t$ and $r$ might be even - leading to degeneracy in what $r$ could be.)
 
 ## Classical Post Processing
 
-$r$ must be even to calculate the factors $(a^{r/2} \pm 1)$.
-If $r$ is not even, the algorithm needs to be restarted with a different random integer $a$.
-We then verify that the factors returned aren't trivially $N$ and $1$.
+$r$ must be even to calculate the factors $\gcd(a^{r/2} \pm 1, N)$.
+If $r$ is not even, the algorithm needs to be restarted with a different integer $a$.
+It is also possible for trivial factors $1$ and $N$ to be returned, such that the algorithm needs to be restarted with a different $a$.
+Otherwise, the non-trivial prime factors are returned.
 
-## Default Example
+In this project, the first register state probabilities are plotted against the state index to display the period.
+We also time the algorithm for different pairs of $(N, a)$ and plot runtimes against $N$ and the total number of required qubits $2n$.
 
-#### Modular Periodicity
+# Default Example
+
+### Modular Periodicity
 
 The simplest example is factoring $N = 15$ into $3$ and $5$, as it is the smallest non-trivial semiprime.
-Lets say $a = 7$, then we can see that $a^x mod N$ is periodic:
+Lets say $a = 7$, then we can see that $a^x \bmod N$ is periodic:
 ```
-7 ** 0 mod 15 = 1
-7 ** 1 mod 15 = 7
-7 ** 2 mod 15 = 4
-7 ** 3 mod 15 = 13
-7 ** 4 mod 15 = 1
-7 ** 5 mod 15 = 7
+7^0 ≡ 1 (mod 15)
+7^1 ≡ 7 (mod 15)
+7^2 ≡ 4 (mod 15)
+7^3 ≡ 13 (mod 15)
+7^4 ≡ 1 (mod 15)
+7^5 ≡ 7 (mod 15)
         ⋮
 ```
-(Therefore, $r = 4$ for $a = 7$ and $N = 15$; but lets get the period from simulating Shor's algorithm!)
+(We can see that $r = 4$ here; but lets get the period from simulating Shor's algorithm!)
 
-#### Qubit Number
+### Qubit Number
 
-The smallest power of $2$ greater than $N$ is $16 = 2^4$, hence the number of qubits in the first register required is $n = 4$.
-Therefore, the total number of qubits in the total register is $8$.
+The smallest power of $2$ greater than $N$ is $16 = 2^4$.
+Therefore, the number of qubits in the first register required is $n = 4$ and the total number of qubits in the total register is $2n = 8$.
 
-#### Hadamard Matrix
+### Hadamard Matrix
 
 Applying a Hadamard operator on a qubit $|0⟩$ gives:
 ```
 H|0⟩ = (1/√2) * (|0⟩ + |1⟩)
 ```
-and applying $H$ on all qubits in the first register:
+and applying Hadamard operators on all qubits in the first register:
 ```
 (H_1 ⊗ H_2 ⊗ H_3 ⊗ H_4)|0⟩ = (1 / 4) * (|0⟩ + |1⟩ + ... + |15⟩)
 ```
-(However, in the python file quanutm_part.py, ```H_1 ⊗ H_2 ⊗ ... ⊗ H_n``` is multiplied with the itentity $I_{16 \times 16}$ to leave the second register unchanged.
+(However, in the file quantum_part.py, ```H_1 ⊗ H_2 ⊗ ... ⊗ H_n``` is multiplied with the identity $I_{16 \times 16}$ to leave the second register unchanged.
 This is a $256 \times 256$ matrix, which is already quite big considering this is the trivial example.)
 
-#### Unitary Matrix
+### Unitary Matrix
 
 Writing the oracle unitary operator as:
 ```
-U = ∑∑(|x⟩|(y + a ** x) mod N⟩⟨y|⟨x|)
+U = ∑_x ∑_y |x⟩|(y + a^x) mod N⟩⟨y|⟨x|
 ```
-where both $∑$ run from $0$ to $2^n - 1 = 15$; we can see that this maps:
+where both $∑$ run from $0$ to $2^n - 1 = 15$.
+This maps:
 ```
 |0⟩|y⟩ → |0⟩|y + 1⟩
 |1⟩|y⟩ → |1⟩|y + 7⟩
        ⋮
 |15⟩|y⟩ → |15⟩|y + 13⟩
 ```
-The element $j, k$ is $1$, where $j$ and $k$ are the output and input states respectively.
+The non-zero elements $j, k$ are $1$, where $j$ and $k$ are the output and input states respectively.
+Because $U$ targets the second register, $j$ and $k$ can be written as:
 ```
-j = x * 16 + (y + 7 ** x mod 15)
+j = x * 16 + ((y + 7^x) mod 15)
 k = x * 16 + y
 ```
-All other elements are $0$.
 
-#### IQFT Matrix
+### IQFT Matrix
 
-For the IQFT operator, the element $j, k$ is:
+This example's elements $j, k$ for the $QFT^{-1}$ matrix:
 ```
 (1 / 4) * exp(2πi * j * k / 16)
 ```
 Applying this matrix increases the probabilities of measuring the states $|0⟩, |4⟩, |8⟩, |12⟩$, while decreasing those for all other states.
 These state numbers are multiples of $4$ - which is the period $r$.
 
-#### Result
+## Result
 
-Post-processing checks will be passed, as $r$ is even; so there is no need to restart the algorithm with a different $a$.
-Therefore, the factors are:
+Post-processing checks will be passed, so there is no need to restart the algorithm with a different $a$.
+The products are:
 ```
-(a ** (r / 2)) + 1 mod N = (7 ** (4 / 2)) + 1 mod 15 = 5
-(a ** (r / 2)) - 1 mod N = (7 ** (4 / 2)) - 1 mod 15 = 3
+(a^(r/2)) + 1 = (7^(4 / 2)) + 1 = 4 + 1 ≡ 5 (mod 15)
+(a^(r/2)) - 1 = (7^(4 / 2)) - 1 = 4 - 1 ≡ 3 (mod 15)
 ```
-such that $15 = 5 * 3$.
+such that $\gcd(3, 15) = 3$ and $\gcd(5, 15) = 5$ give the factors of $15$: $3$ and $5$.
 
 # References
 
