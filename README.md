@@ -56,7 +56,7 @@ pip install -r requirements.txt
 **Terminal input**:
 
 ```python
-python examples/example_15.py
+python examples/factorisation_example.py
 ```
 
 **Output**:
@@ -94,7 +94,7 @@ Shors_Algorithm_Simulation
 ├── main.py                       # Main execution script
 ├── examples/                     # Example usage and demonstrations
 │   ├── __init__.py
-│   ├── example_15.py             # Default example
+│   ├── factorisation_example.py  # Runs an example and saves it to images
 │   └── runtimes_test.py          # Runtime performance testing
 ├── images/                       # Generated visualizations of examples
 └── src/                          # Source code
