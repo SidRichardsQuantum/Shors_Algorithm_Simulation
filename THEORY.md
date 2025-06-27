@@ -166,7 +166,8 @@ such that $\gcd(3, 15) = 3$ and $\gcd(5, 15) = 5$ give the factors of $15$: $3$ 
 
 ---
 
-📘 Author: [Sid Richards]
+📘 Author: Sid Richards (SidRichardsQuantum)
 
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="20" /> LinkedIn: [https://www.linkedin.com/in/sid-richards-21374b30b/]
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="20" /> LinkedIn: https://www.linkedin.com/in/sid-richards-21374b30b/
 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
