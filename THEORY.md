@@ -158,7 +158,7 @@ The products are:
 ```
 such that $\gcd(3, 15) = 3$ and $\gcd(5, 15) = 5$ give the factors of $15$: $3$ and $5$.
 
-# References
+## References
 
 - [Shor's Algorithm Explained](https://en.wikipedia.org/wiki/Shor%27s_algorithm)
 - [Quantum Fourier Transform](https://qiskit.org/textbook/ch-algorithms/quantum-fourier-transform.html)
