@@ -2,7 +2,7 @@
 
 ## State Probabilities
 
-![](images/)
+![N=35, a=2](images/first_register_probabilities_N=35_a=2.png)
 
 ## Runtimes Vs Required Qubits
 
