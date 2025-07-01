@@ -46,3 +46,11 @@ Runtimes are plotted against $N$, and again against the number of qubits require
 
 We can clearly see that the relationship between classical runtime and required qubits is exponential.
 A real quantum implementation of Shor's algorithm would factorise semiprimes in polynomial time, even if it takes longer to factorise small semiprimes than classical algorithms.
+
+---
+
+📘 Author: Sid Richards (SidRichardsQuantum)
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="20" /> LinkedIn: https://www.linkedin.com/in/sid-richards-21374b30b/
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
