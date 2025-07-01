@@ -3,7 +3,7 @@
 A pure Python implementation of Shor's quantum factorization algorithm using classical matrix operations to simulate quantum circuits.
 This project demonstrates the core concepts of Shor's algorithm without relying on quantum computing frameworks like Qiskit.
 
-# Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
 2. [Algorithm Steps](#algorithm-steps)
@@ -15,14 +15,14 @@ This project demonstrates the core concepts of Shor's algorithm without relying 
 8. [Educational Resources](#educational-resources)
 9. [Acknowledgments](#acknowledgments)
 
-## Overview
+### Overview
 
 Shor's algorithm is a quantum algorithm that efficiently finds the prime factors of large integers, which forms the basis for breaking RSA encryption.
 This implementation simulates the quantum operations classically, to illustrate how the algorithm works step-by-step in exponential $O(2^n)$ time, where $n$ is the total number of qubits required.
 
 See [THEORY.md](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/blob/main/THEORY.md) for a descriptive algorithm walkthrough.
 
-## Algorithm Steps
+### Algorithm Steps
 
 1. **Input Validation**: Takes a semiprime and checks it isn't even or a perfect square
 2. **Quantum Register Setup**: Creates two qubit registers
@@ -36,14 +36,14 @@ A quantum circuit for Shor's Algorithm using 8 qubits (only utilisation of qiski
 
 ![quantum_circuit](images/quantum_circuit.png)
 
-## Features
+### Features
 
 - **Pure Python Implementation**: No quantum computing libraries required
 - **Educational Focus**: Clear step-by-step implementation with detailed comments
 - **Visualization**: Plots probability distributions to visualize quantum measurements
 - **Runtimes**: Graph of code runtime to show the exponential nature of this classical simulation
 
-## Installation
+### Installation
 
 ```bash
 git clone https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation
@@ -51,7 +51,7 @@ cd Shors_Algorithm_Simulation
 pip install -r requirements.txt
 ```
 
-## Example Usage
+### Example Usage
 
 **Terminal input**:
 
@@ -76,14 +76,14 @@ This also saves the plot to the "images" directory as "first_register_probabilit
 
 ![first_register_probabilities_N=15_a=7](images/first_register_probabilities_N=15_a=7.png)
 
-## Limitations
+### Limitations
 
 - **Exponential Memory**: Classical simulation runtime is $O(exp(√(log N)))$ (sub-)exponential for factorisation problems
 - **Small Numbers Only**: Practical for factoring small integers ($N < 300$) using few qubits
 - **Educational Purpose**: Not suitable for large numbers practically used for RSA
 - **Multiple Runs**: May require multiple runs if classical checks on $N, a$ or $r$ fail
 
-## Project Structure
+### Project Structure
 
 ```
 Shors_Algorithm_Simulation
@@ -116,13 +116,13 @@ Shors_Algorithm_Simulation
         └── run_quantum_gates.py  # Quantum circuit execution
 ```
 
-## Educational Resources
+### Educational Resources
 
 - [Shor's Algorithm Explained](https://en.wikipedia.org/wiki/Shor%27s_algorithm)
 - [Quantum Fourier Transform](https://qiskit.org/textbook/ch-algorithms/quantum-fourier-transform.html)
 - [Period Finding and Factorization](https://docs.microsoft.com/en-us/quantum/concepts/algorithms)
 
-## Acknowledgments
+### Acknowledgments
 
 This implementation is inspired by the original work of Peter Shor and serves as an educational tool for understanding quantum algorithms through classical simulation.
 
