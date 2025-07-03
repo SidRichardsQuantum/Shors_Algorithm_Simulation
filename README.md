@@ -20,9 +20,9 @@ This project demonstrates the core concepts of Shor's algorithm without relying 
 Shor's algorithm is a quantum algorithm that efficiently finds the prime factors of large integers, which forms the basis for breaking RSA encryption.
 This implementation simulates the quantum operations classically, to illustrate how the algorithm works step-by-step in exponential $O(2^n)$ time, where $n$ is the total number of qubits required.
 
-See [THEORY.md](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/blob/main/THEORY.md) for a descriptive algorithm walkthrough.
+See [THEORY.md](THEORY.md) for a descriptive algorithm walkthrough.
 
-See [RESULTS.md](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/blob/main/RESULTS.md) for results and conclusions.
+See [RESULTS.md](RESULTS.md) for results and conclusions.
 
 ### Algorithm Steps
 
@@ -128,8 +128,6 @@ This also saves the plot to the "images" directory as "first_register_probabilit
 ### Acknowledgments
 
 This implementation is inspired by the original work of Peter Shor and serves as an educational tool for understanding quantum algorithms through classical simulation.
-
----
 
 **Note**: This is a classical simulation for educational purposes.
 Real quantum advantage requires actual quantum hardware that can efficiently implement this factorisation algorithm in $O((log(N))^3)$) polynomial time.
