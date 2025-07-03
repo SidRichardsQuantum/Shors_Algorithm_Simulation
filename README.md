@@ -8,10 +8,10 @@ This project demonstrates the core concepts of Shor's algorithm without relying 
 1. [Overview](#overview)
 2. [Algorithm Steps](#algorithm-steps)
 3. [Features](#features)
-4. [Installation](#installation)
-5. [Example Usage](#example-usage)
-6. [Limitations](#limitations)
-7. [Project Structure](#project-structure)
+4. [Project Structure](#project-structure)
+5. [Installation](#installation)
+6. [Example Usage](#example-usage)
+7. [Limitations](#limitations)
 8. [Educational Resources](#educational-resources)
 9. [Acknowledgments](#acknowledgments)
 
@@ -21,6 +21,8 @@ Shor's algorithm is a quantum algorithm that efficiently finds the prime factors
 This implementation simulates the quantum operations classically, to illustrate how the algorithm works step-by-step in exponential $O(2^n)$ time, where $n$ is the total number of qubits required.
 
 See [THEORY.md](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/blob/main/THEORY.md) for a descriptive algorithm walkthrough.
+
+See [RESULTS.md](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/blob/main/RESULTS.md) for results and conclusions.
 
 ### Algorithm Steps
 
@@ -42,6 +44,40 @@ A quantum circuit for Shor's Algorithm using 8 qubits (only utilisation of qiski
 - **Educational Focus**: Clear step-by-step implementation with detailed comments
 - **Visualization**: Plots probability distributions to visualize quantum measurements
 - **Runtimes**: Graph of code runtime to show the exponential nature of this classical simulation
+
+### Project Structure
+
+```
+Shors_Algorithm_Simulation
+├── LICENSE                       # Project license
+├── requirements.txt              # Python dependencies
+├── README.md                     # This file
+├── THEORY.md                     # Theoretical background
+├── RESULTS.md                    # Results, conclusions and evaluations
+├── main.py                       # Main execution script
+├── examples/                     # Example usage and demonstrations
+│   ├── __init__.py
+│   ├── factorisation_example.py  # Runs an example and saves it to images
+│   └── runtimes_test.py          # Runtime performance testing
+├── images/                       # Generated visualizations of examples
+└── src/                          # Source code
+    ├── __init__.py               # Main package initialization
+    ├── classical_parts/          # Classical algorithm components
+    │   ├── __init__.py
+    │   ├── pre_checks.py         # Pre-quantum validation
+    │   └── post_checks.py        # Post-quantum validation
+    ├── plots_and_period/         # Visualization and period finding
+    │   ├── __init__.py
+    │   ├── find_period.py        # Period finding function
+    │   ├── probability_plot.py   # Probability visualization
+    │   └── runtime_plot.py       # Runtime analysis plots
+    └── quantum_part/             # Quantum operators
+        ├── __init__.py
+        ├── hadamard_matrix.py    # Hadamard gate implementation
+        ├── oracle_matrix.py      # Modular exponentiation oracle
+        ├── iqft_matrix.py        # Inverse QFT implementation
+        └── run_quantum_gates.py  # Quantum circuit execution
+```
 
 ### Installation
 
@@ -82,39 +118,6 @@ This also saves the plot to the "images" directory as "first_register_probabilit
 - **Small Numbers Only**: Practical for factoring small integers ($N < 300$) using few qubits
 - **Educational Purpose**: Not suitable for large numbers practically used for RSA
 - **Multiple Runs**: May require multiple runs if classical checks on $N, a$ or $r$ fail
-
-### Project Structure
-
-```
-Shors_Algorithm_Simulation
-├── LICENSE                       # Project license
-├── requirements.txt              # Python dependencies
-├── README.md                     # This file
-├── THEORY.md                     # Theoretical background
-├── main.py                       # Main execution script
-├── examples/                     # Example usage and demonstrations
-│   ├── __init__.py
-│   ├── factorisation_example.py  # Runs an example and saves it to images
-│   └── runtimes_test.py          # Runtime performance testing
-├── images/                       # Generated visualizations of examples
-└── src/                          # Source code
-    ├── __init__.py               # Main package initialization
-    ├── classical_parts/          # Classical algorithm components
-    │   ├── __init__.py
-    │   ├── pre_checks.py         # Pre-quantum validation
-    │   └── post_checks.py        # Post-quantum validation
-    ├── plots_and_period/         # Visualization and period finding
-    │   ├── __init__.py
-    │   ├── find_period.py        # Period finding function
-    │   ├── probability_plot.py   # Probability visualization
-    │   └── runtime_plot.py       # Runtime analysis plots
-    └── quantum_part/             # Quantum operators
-        ├── __init__.py
-        ├── hadamard_matrix.py    # Hadamard gate implementation
-        ├── oracle_matrix.py      # Modular exponentiation oracle
-        ├── iqft_matrix.py        # Inverse QFT implementation
-        └── run_quantum_gates.py  # Quantum circuit execution
-```
 
 ### Educational Resources
 
