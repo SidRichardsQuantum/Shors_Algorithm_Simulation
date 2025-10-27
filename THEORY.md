@@ -48,7 +48,7 @@ The Hadamard matrices are then applied to all qubits in the first register by it
 The full Hadamard matrix is then multiplied with the identity matrix (for the second register), also by using the Kronecker product.
 Applying this to the full register gives:
 ```
-|ψ1⟩ = (H^{⊗n} ⊗ I_{2^n})|ψ0⟩ = (1/√(2^n)) ∑|x⟩|1⟩
+|ψ1⟩ = (H^{⊗n} ⊗ I_{2^n})|ψ0⟩ = (1/√(2^n)) ∑_x |x⟩|0⟩
 ```
 
 ### Modular Oracle
@@ -56,7 +56,7 @@ Applying this to the full register gives:
 A unitary matrix $U$ which maps $|x⟩|y⟩ \rightarrow |x⟩|(y + a^x) \bmod N⟩$ is generated.
 Applying this to ```|ψ1⟩``` above gives:
 ```
-|ψ2⟩ = U|ψ1⟩ = (1/√(2^n)) ∑_x |x⟩|1 + a^x mod N⟩
+|ψ2⟩ = U|ψ1⟩ = (1/√(2^n)) ∑_x |x⟩|a^x mod N⟩
 ```
 This leaves the first register unchanged, but entangles it with the second - encoding periodicity.
 
@@ -72,7 +72,7 @@ In a real implementation of Shor's algorithm using quantum hardware, a measureme
 (I say "chance", because both $t$ and $r$ might be even - leading to degeneracy in what $r$ could be.)
 
 In this project, the first register state probabilities are plotted against the state index to display the period.
-find_period.py then takes these probabilities and finds $r$ using the differences in state indices which have the highest probabilities.
+`find_period.py` then takes these probabilities and finds $r$ using the differences in state indices which have the highest probabilities.
 
 ## Classical Post Processing
 
@@ -115,7 +115,7 @@ and applying Hadamard operators on all qubits in the first register:
 ```
 (H_1 ⊗ H_2 ⊗ H_3 ⊗ H_4)|0⟩ = (1 / 4) * (|0⟩ + |1⟩ + ... + |15⟩)
 ```
-(However, in the file quantum_part.py, ```H_1 ⊗ H_2 ⊗ ... ⊗ H_n``` is multiplied with the identity $I_{16 \times 16}$ to leave the second register unchanged.
+(However, in the file `quantum_part.py`, ```H_1 ⊗ H_2 ⊗ ... ⊗ H_n``` is multiplied with the identity $I_{16 \times 16}$ to leave the second register unchanged.
 This is a $256 \times 256$ matrix, which is already quite big considering this is the trivial example.)
 
 ### Unitary Matrix
