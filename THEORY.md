@@ -48,7 +48,7 @@ The Hadamard matrices are then applied to all qubits in the first register by it
 The full Hadamard matrix is then multiplied with the identity matrix (for the second register), also by using the Kronecker product.
 Applying this to the full register gives:
 ```
-|ψ1⟩ = (H^{⊗n} ⊗ I_n)|ψ0⟩ = (1/√(2^n)) ∑|x⟩|1⟩
+|ψ1⟩ = (H^{⊗n} ⊗ I_{2^n})|ψ0⟩ = (1/√(2^n)) ∑|x⟩|1⟩
 ```
 
 ### Modular Oracle
