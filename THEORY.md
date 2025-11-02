@@ -1,5 +1,25 @@
 # Theory
 
+## Table of Contents
+
+- [Intro](#intro)
+- [Classical Pre-Processing](#classical-pre-processing)
+- [Quantum Operations](#quantum-operations)
+  - [Hadamard Gates](#hadamard-gates)
+  - [Modular Oracle](#modular-oracle)
+  - [Inverse Quantum Fourier Transform (IQFT)](#inverse-quantum-fourier-transform-iqft)
+- [Classical Post Processing](#classical-post-processing)
+- [Default Example](#default-example)
+  - [Modular Periodicity](#modular-periodicity)
+  - [Qubit Number](#qubit-number)
+  - [Hadamard Matrix](#hadamard-matrix)
+  - [Unitary Matrix](#unitary-matrix)
+  - [IQFT Matrix](#iqft-matrix)
+  - [Result](#result)
+- [References](#references)
+
+## Intro
+
 A semiprime $N$ is the product of two primes.
 For any integer $a < N$ coprime to $N$, and integer $b$, the function $a^x \bmod N$ has period $r$:
 ```
@@ -148,7 +168,7 @@ This example's elements $j, k$ for the $QFT^{-1}$ matrix:
 Applying this matrix increases the probabilities of measuring the states $|0⟩, |4⟩, |8⟩, |12⟩$, while decreasing those for all other states.
 These state numbers are multiples of $4$ - which is the period $r$.
 
-## Result
+### Result
 
 Post-processing checks will be passed, so there is no need to restart the algorithm with a different $a$.
 The products are:
