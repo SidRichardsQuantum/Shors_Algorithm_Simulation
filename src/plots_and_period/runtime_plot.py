@@ -7,6 +7,7 @@ from math import log2, ceil
 import matplotlib.pyplot as plt
 import matplotlib
 import time
+import csv
 from main import shors_simulation
 
 
@@ -20,6 +21,68 @@ def timer(N, a, sparse=True):
     except Exception as e:
         print(f"Error with N={N}, a={a}: {e}")
         return None
+
+
+def benchmark_runtime_table(test_cases, repeats=3, sparse=True, output_csv="images/runtime_benchmark.csv"):
+    """
+    Benchmark Shor's simulation and save tabular results to CSV.
+
+    Each row contains:
+    N, a, qubits, repeats, successes, mean_seconds, std_seconds, min_seconds, max_seconds, sparse
+    """
+
+    rows = []
+    print("Running runtime benchmark table...")
+    for N, a in test_cases:
+        times = []
+        for _ in range(repeats):
+            runtime = timer(N, a, sparse=sparse)
+            if runtime is not None:
+                times.append(runtime)
+
+        total_qubits = 2 * ceil(log2(N))
+        if times:
+            row = {
+                "N": N,
+                "a": a,
+                "qubits": total_qubits,
+                "repeats": repeats,
+                "successes": len(times),
+                "mean_seconds": float(np.mean(times)),
+                "std_seconds": float(np.std(times)),
+                "min_seconds": float(np.min(times)),
+                "max_seconds": float(np.max(times)),
+                "sparse": sparse,
+            }
+            rows.append(row)
+            print(
+                f"N={N}, a={a}, qubits={total_qubits}: "
+                f"mean={row['mean_seconds']:.4f}s, std={row['std_seconds']:.4f}s, "
+                f"range=[{row['min_seconds']:.4f}, {row['max_seconds']:.4f}]"
+            )
+        else:
+            print(f"N={N}, a={a}: all runs failed")
+
+    os.makedirs(os.path.dirname(output_csv) or ".", exist_ok=True)
+    fieldnames = [
+        "N",
+        "a",
+        "qubits",
+        "repeats",
+        "successes",
+        "mean_seconds",
+        "std_seconds",
+        "min_seconds",
+        "max_seconds",
+        "sparse",
+    ]
+    with open(output_csv, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    print(f"Benchmark CSV saved as: {output_csv}")
+    return rows
 
 
 def run_runtime_analysis(test_cases, repeats=3, sparse=True):
