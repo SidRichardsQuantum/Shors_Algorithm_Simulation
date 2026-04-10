@@ -57,7 +57,9 @@ Shors_Algorithm_Simulation
 ├── main.py                       # Main execution script
 ├── examples/                     # Example usage and demonstrations
 │   ├── __init__.py
-│   ├── factorisation_example.py  # Runs an example and saves it to images
+│   ├── factorisation_example.py  # Single deterministic run with saved plot
+│   ├── no_plot_example.py        # Deterministic run without displaying plots
+│   ├── multiple_cases_example.py # Run several (N, a) examples without plots
 │   └── runtimes_test.py          # Runtime performance testing
 ├── images/                       # Generated visualizations of examples
 └── src/                          # Source code
@@ -89,26 +91,29 @@ pip install -r requirements.txt
 
 ### Example Usage
 
-**Terminal input**:
+**Terminal inputs**:
 
 ```python
-python examples/factorisation_example.py
+python examples/factorisation_example.py   # single run with plot output
+python examples/no_plot_example.py         # single run without plotting
+python examples/multiple_cases_example.py  # batch of small deterministic cases
 ```
 
 **Output**:
 
 ```
-N = 15
+N = 35
 Running Classical Checks...
 Classical checks passed.
-a = 7.
+a = 2.
 Proceeding to quantum algorithm...
-The period r = 4 is even.
-a^(r/2) + 1 = 5, and gcd(5, 15) = 5
-a^(r/2) - 1 = 3, and gcd(3, 15) = 3
-The factors of N = 15 are 5 and 3.
+(Using backup period)
+The period r = 12 is even.
+a^(r/2) + 1 = 30, and gcd(30, 35) = 5
+a^(r/2) - 1 = 28, and gcd(28, 35) = 7
+The factors of N = 35 are 5 and 7.
 ```
-This also saves the plot to the "images" directory as "first_register_probabilities_N=15_a=7.png":
+This also saves the plot to the "images" directory as "first_register_probabilities_N=35_a=2.png":
 
 ![first_register_probabilities_N=15_a=7](images/first_register_probabilities_N=15_a=7.png)
 
