@@ -114,7 +114,7 @@ This also saves the plot to the "images" directory as "first_register_probabilit
 
 ### Limitations
 
-- **Exponential Memory**: Classical simulation runtime is $O(exp(√(log N)))$ (sub-)exponential for factorisation problems
+- **Exponential Runtime/Memory**: Classical state-vector simulation scales exponentially with qubit count (roughly $O(2^n)$ in qubits, with large constant factors for full matrix operations).
 - **Small Numbers Only**: Practical for factoring small integers ($N < 300$) using few qubits
 - **Educational Purpose**: Not suitable for large numbers practically used for RSA
 - **Multiple Runs**: May require multiple runs if classical checks on $N, a$ or $r$ fail
@@ -130,7 +130,7 @@ This also saves the plot to the "images" directory as "first_register_probabilit
 This implementation is inspired by the original work of Peter Shor and serves as an educational tool for understanding quantum algorithms through classical simulation.
 
 **Note**: This is a classical simulation for educational purposes.
-Real quantum advantage requires actual quantum hardware that can efficiently implement this factorisation algorithm in $O((log(N))^3)$) polynomial time.
+Real quantum advantage requires actual quantum hardware that can efficiently implement this factorisation algorithm in polynomial time (commonly cited as roughly $O((\log N)^3)$ for idealized gate complexity).
 
 ---
 
