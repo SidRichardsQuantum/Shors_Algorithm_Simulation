@@ -10,7 +10,7 @@ When $a=2$, the period of $a^x \bmod N$ is $r=12$, as seen by the number peaks i
 In our file ```src/plots_and_period/find_period.py```, the first period candidate is the number of peaks with the maximum probability; $3$ in the image above - which is incorrect.
 The second period candidate is then used, which is the number of peaks with probability above the mean - yielding $12$ which is correct.
 
-The output when running ```shors_simulation(N=15, a=7, show_plots=True, sparse=True)``` is:
+The output when running ```shors_simulation(N=35, a=2, show_plots=True, sparse=True)``` is:
 ```
 N = 35
 Running Classical Checks...
@@ -29,7 +29,7 @@ Plot saved as: images/first_register_probabilities_N=35_a=2.png
 
 ## Runtimes Vs Required Qubits
 
-Running the file ```examples/runtimes_text.py``` calls the function ```run_runtime_analysis()``` from ```src/plots_and_period/runtime_plot.py```.
+Running the file ```examples/runtimes_test.py``` calls the function ```run_runtime_analysis()``` from ```src/plots_and_period/runtime_plot.py```.
 This plots the simulation's runtimes for different combinations of $(N, a)$ which are known to yield non-trivial outputs.
 ```
 # List of the form (N, a)
