@@ -1,0 +1,1 @@
+"""Quantum-operator simulation helpers."""

@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shors-algorithm-simulation"
+version = "0.1.0"
+description = "Educational classical simulation of Shor's period-finding algorithm."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "scipy",
+]
+
+[project.optional-dependencies]
+circuits = [
+    "qiskit",
+    "pylatexenc",
+]
+test = [
+    "pytest",
+]
+dev = [
+    "pytest",
+    "qiskit",
+    "pylatexenc",
+]
+
+[project.scripts]
+shors-sim = "shors_algorithm_simulation.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["shors_algorithm_simulation*"]

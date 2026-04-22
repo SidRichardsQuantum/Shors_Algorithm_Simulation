@@ -1,11 +1,19 @@
+from __future__ import annotations
+
 import numpy as np
 from math import log2, ceil
-from src.quantum_part.hadamard_matrix import hadamard_matrix_sparse, hadamard_matrix
-from src.quantum_part.oracle_matrix import oracle_matrix_sparse, oracle_matrix
-from src.quantum_part.iqft_matrix import iqft_matrix, iqft_matrix_sparse
+from shors_algorithm_simulation.quantum.hadamard import hadamard_matrix, hadamard_matrix_sparse
+from shors_algorithm_simulation.quantum.iqft import iqft_matrix, iqft_matrix_sparse
+from shors_algorithm_simulation.quantum.oracle import oracle_matrix, oracle_matrix_sparse
 
 
-def run_quantum_gates(N, a, sparse=True, first_register_qubits=None, second_register_qubits=None):
+def run_quantum_gates(
+    N: int,
+    a: int,
+    sparse: bool = True,
+    first_register_qubits: int | None = None,
+    second_register_qubits: int | None = None,
+) -> np.ndarray:
     """
     Run the quantum part of Shor's algorithm.
 

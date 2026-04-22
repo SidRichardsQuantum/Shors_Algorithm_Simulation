@@ -1,5 +1,7 @@
 # Classical Simulation of Shor's Algorithm
 
+[![Tests](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/actions/workflows/tests.yml/badge.svg)](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/actions/workflows/tests.yml)
+
 A pure Python implementation of Shor's quantum factorization algorithm using classical simulation of the period-finding step.
 The project supports both explicit matrix simulation for very small inputs and a faster distribution-based simulation for the ideal first-register measurement probabilities.
 
@@ -48,6 +50,8 @@ A quantum circuit sketch for Shor's Algorithm using 8 qubits:
 - **Visualization**: Plots probability distributions to visualize quantum measurements
 - **Period-Finding Diagnostics**: Plots oracle periodicity, marked IQFT peaks, continued-fraction candidates, and mode comparisons
 - **Runtimes**: Graph of code runtime to show the exponential nature of this classical simulation
+- **Sampled Measurements**: Optional `shots` sampling draws stochastic first-register measurements from the ideal distribution
+- **Retry Orchestration**: `max_attempts` can try multiple bases when `a` is not provided
 - **Two Period-Finding Modes**:
   - `mode="distribution"` computes the ideal first-register measurement distribution directly, using the standard `Q ~= N^2` period register size.
   - `mode="matrix"` explicitly applies the simulated Hadamard, oracle, and IQFT matrices for very small inputs.
@@ -62,7 +66,7 @@ Shors_Algorithm_Simulation
 ├── CIRCUITS.md                   # Circuit diagram walkthrough
 ├── THEORY.md                     # Theoretical background
 ├── RESULTS.md                    # Results, conclusions and evaluations
-├── main.py                       # Main execution script
+├── main.py                       # Compatibility CLI shim
 ├── examples/                     # Example usage and demonstrations
 │   ├── __init__.py
 │   ├── benchmark_runtime.py      # Save runtime benchmark table
@@ -70,30 +74,31 @@ Shors_Algorithm_Simulation
 │   ├── factorisation_example.py  # Single deterministic run with saved plot
 │   ├── no_plot_example.py        # Deterministic run without displaying plots
 │   ├── multiple_cases_example.py # Run several (N, a) examples without plots
+│   ├── shots_sweep_example.py    # Success rate vs sampled measurement shots
 │   ├── visualizations_example.py # Generate educational period-finding plots
 │   └── runtimes_test.py          # Runtime performance testing
 ├── images/                       # Generated visualizations of examples
 ├── tests/                        # Regression tests
-└── src/                          # Source code
-    ├── __init__.py               # Main package initialization
-    ├── classical_parts/          # Classical algorithm components
+└── shors_algorithm_simulation/   # Source package
+    ├── __init__.py               # Public API exports
+    ├── cli.py                    # argparse and human-readable output
+    ├── core.py                   # Typed core API without CLI printing
+    ├── probabilities.py          # Ideal distributions and sampled measurements
+    ├── period.py                 # Continued-fraction period recovery
+    ├── validation.py             # Classical input and factor checks
+    ├── plotting/                 # Visualization helpers
     │   ├── __init__.py
-    │   ├── pre_checks.py         # Pre-quantum validation
-    │   └── post_checks.py        # Post-quantum validation
-    ├── plots_and_period/         # Visualization and period finding
-    │   ├── __init__.py
-    │   ├── find_period.py        # Period finding function
-    │   ├── probability_plot.py   # Probability visualization
-    │   ├── visualizations.py     # Educational diagnostics and comparison plots
-    │   └── runtime_plot.py       # Runtime analysis plots
-    └── quantum_part/             # Quantum operators
+    │   ├── diagnostics.py        # Educational diagnostics and comparison plots
+    │   ├── formatting.py         # Plot label formatting
+    │   ├── probabilities.py      # Probability visualization
+    │   └── runtime.py            # Runtime analysis plots
+    └── quantum/                  # Quantum operators and optional diagrams
         ├── __init__.py
-        ├── circuit_diagrams.py   # Reusable Qiskit circuit diagram builders
-        ├── hadamard_matrix.py    # Hadamard gate implementation
-        ├── oracle_matrix.py      # Modular exponentiation oracle
-        ├── iqft_matrix.py        # Inverse QFT implementation
-        ├── quantum_circuit.py    # Qiskit circuit diagram generation
-        └── run_quantum_gates.py  # Quantum circuit execution
+        ├── circuits.py           # Reusable Qiskit circuit diagram builders
+        ├── gates.py              # Quantum circuit execution
+        ├── hadamard.py           # Hadamard gate implementation
+        ├── iqft.py               # Inverse QFT implementation
+        └── oracle.py             # Modular exponentiation oracle
 ```
 
 ### Installation
@@ -104,64 +109,77 @@ cd Shors_Algorithm_Simulation
 pip install -r requirements.txt
 ```
 
-`qiskit` and `pylatexenc` are included so `src/quantum_part/quantum_circuit.py` can regenerate the illustrative circuit diagram.
+`requirements.txt` includes the simulator dependencies plus `pytest` for local test runs. Circuit diagram generation uses optional Qiskit dependencies:
+
+```bash
+pip install -r requirements-circuits.txt
+# or, for editable/package installs:
+pip install ".[circuits]"
+```
 
 ### Example Usage
 
 **Terminal inputs**:
 
 ```python
-python examples/factorisation_example.py   # single run with plot output
-python examples/no_plot_example.py         # single run without plotting
-python examples/multiple_cases_example.py  # batch of small deterministic cases
-python examples/visualizations_example.py  # generate educational diagnostic plots
-python examples/circuit_diagrams_example.py --N 15 --a 2
+python -m examples.factorisation_example   # single run with plot output
+python -m examples.no_plot_example         # single run without plotting
+python -m examples.multiple_cases_example  # batch of small deterministic cases
+python -m examples.shots_sweep_example     # plot success rate vs sampled shots
+python -m examples.visualizations_example  # generate educational diagnostic plots
+python -m examples.circuit_diagrams_example --N 15 --a 2
 ```
 
 **Command-line usage**:
 
 ```bash
-python main.py --N 35 --a 2 --mode distribution --plots
+python main.py --N 35 --a 2 --mode distribution --plots --output-dir images
 python main.py --N 15 --a 2 --mode matrix --json
+python main.py --N 21 --a 2 --shots 1024 --seed 1 --json
+python main.py --N 33 --max-attempts 5 --seed 0
 ```
 
 Visualization plots can also be selected from the command line:
 
 ```bash
-python examples/visualizations_example.py --N 35 --a 2 --plots oracle marked continued
-python examples/visualizations_example.py --plots comparison --comparison-N 15 --comparison-a 2
+python -m examples.shots_sweep_example --N 21 --a 2 --shots 16 32 64 128 256 --trials 20
+python -m examples.visualizations_example --N 35 --a 2 --plots oracle marked continued
+python -m examples.visualizations_example --plots comparison --comparison-N 15 --comparison-a 2
 ```
 
 Circuit diagrams can be generated from the command line:
 
 ```bash
-python examples/circuit_diagrams_example.py --N 15 --a 2 --output-dir images
-python -m src.quantum_part.circuit_diagrams --N 35 --a 2
+python -m examples.circuit_diagrams_example --N 15 --a 2 --output-dir images
+python -m shors_algorithm_simulation.quantum.circuits --N 35 --a 2
 ```
 
 **Programmatic mode selection**:
 
 ```python
-from main import shors_simulation
+from shors_algorithm_simulation import shors_simulation
 
-result = shors_simulation(N=21, a=2, show_plots=False, mode="distribution")
+result = shors_simulation(N=21, a=2, mode="distribution")
 print(result["success"], result["factors"], result["period"])
 
-matrix_result = shors_simulation(N=15, a=2, show_plots=False, mode="matrix")
+matrix_result = shors_simulation(N=15, a=2, mode="matrix")
 print(matrix_result["success"], matrix_result["factors"], matrix_result["period"])
+
+sampled_result = shors_simulation(N=21, a=2, shots=1024, random_seed=1)
+print(sampled_result["measurement_counts"])
+
+retry_result = shors_simulation(N=33, max_attempts=5, random_seed=0)
+print(retry_result["success"], len(retry_result["attempts"]))
 ```
 
 `distribution` mode is the default and is appropriate for the documented examples. `matrix` mode is intended for the smallest cases because explicit gate matrices grow quickly.
-`shors_simulation` returns a dictionary containing `success`, `N`, `a`, `mode`, `period`, `factors`, `message`, and `classical_precheck`.
+`shors_simulation` returns a dictionary containing `success`, `N`, `a`, `mode`, `period`, `factors`, `message`, `classical_precheck`, `shots`, `measurement_counts`, and `attempts`.
 
 **Output**:
 
 ```
 N = 35
-Running Classical Checks...
-Classical checks passed.
-a = 2.
-Proceeding to quantum algorithm...
+Attempt 1: a = 2
 The period r = 12 is even.
 a^(r/2) + 1 = 30, and gcd(30, 35) = 5
 a^(r/2) - 1 = 28, and gcd(28, 35) = 7
@@ -180,6 +198,14 @@ This also saves the plot to the "images" directory as "first_register_probabilit
 - continued-fraction candidate plot and CSV table
 - matrix mode vs distribution mode comparison for a small case
 
+`examples/shots_sweep_example.py` repeats sampled period recovery for multiple shot counts and saves a CSV plus a success-rate plot. It is intended to show how empirical measurement histograms converge toward the ideal distribution as shots increase.
+
+### What Is Simulated
+
+`mode="matrix"` constructs the full simulated state evolution for tiny examples, so it is useful for checking the gate-level model but grows quickly.
+`mode="distribution"` computes the ideal post-IQFT first-register probability distribution directly from the periodic oracle values. It does not build a scalable quantum computer or simulate hardware noise.
+When `shots` is provided, the simulator samples measurement counts from that ideal distribution and then runs the same continued-fraction recovery on the empirical histogram.
+
 ### Tests
 
 ```bash
@@ -190,6 +216,7 @@ pytest -q
 
 - **Exponential Runtime/Memory**: `mode="matrix"` scales exponentially with the number of simulated qubits and is only practical for tiny cases.
 - **Distribution Mode Is Idealized**: `mode="distribution"` avoids full matrices by computing the ideal first-register distribution directly, which is still a classical simulation of the period-finding output.
+- **Shot Sampling Is Synthetic**: `shots` samples from the ideal distribution; it does not model device noise, decoherence, or imperfect gates.
 - **Small Numbers Only**: Practical for factoring small educational examples, not cryptographic integers.
 - **Educational Purpose**: Not suitable for large numbers practically used for low-bit RSA
 - **Multiple Runs**: May require multiple runs if classical checks on $N, a$ or $r$ fail

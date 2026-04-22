@@ -1,17 +1,16 @@
 import numpy as np
 import pytest
 
-from main import shors_simulation
-from src.plots_and_period.find_period import find_period
-from src.plots_and_period.probability_plot import compute_probs
-from src.plots_and_period.visualizations import (
+from shors_algorithm_simulation import compute_probs, sample_measurements, shors_simulation
+from shors_algorithm_simulation.period import find_period
+from shors_algorithm_simulation.plotting.diagnostics import (
     generate_visualization_set,
     plot_continued_fraction_diagnostics,
     plot_marked_probability_distribution,
     plot_matrix_distribution_comparison,
     plot_oracle_period_pattern,
 )
-from src.quantum_part.oracle_matrix import oracle_matrix_sparse
+from shors_algorithm_simulation.quantum.oracle import oracle_matrix_sparse
 
 
 @pytest.mark.parametrize(
@@ -34,8 +33,43 @@ def test_find_period_rejects_period_that_cannot_factor():
         find_period(33, 2, mode="distribution")
 
 
+@pytest.mark.parametrize("N", [0, 1, -15, 15.0, True])
+def test_shors_simulation_rejects_invalid_N(N):
+    with pytest.raises(ValueError, match="N must be an integer greater than 1"):
+        shors_simulation(N=N, a=2)
+
+
+def test_shors_simulation_rejects_prime_N():
+    with pytest.raises(ValueError, match="N must be composite"):
+        shors_simulation(N=17, a=2)
+
+
+@pytest.mark.parametrize("a", [1, 15])
+def test_shors_simulation_rejects_out_of_range_a(a):
+    with pytest.raises(ValueError, match="Invalid value for 'a'"):
+        shors_simulation(N=15, a=a)
+
+
+@pytest.mark.parametrize("a", [2.5, False])
+def test_shors_simulation_rejects_non_integer_a(a):
+    with pytest.raises(ValueError, match="a must be an integer"):
+        shors_simulation(N=15, a=a)
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "message"),
+    [
+        ({"max_attempts": 0}, "max_attempts must be"),
+        ({"shots": 0}, "shots must be"),
+    ],
+)
+def test_shors_simulation_rejects_invalid_retry_and_sampling_inputs(kwargs, message):
+    with pytest.raises(ValueError, match=message):
+        shors_simulation(N=15, a=2, **kwargs)
+
+
 def test_shors_simulation_returns_structured_success(capsys):
-    result = shors_simulation(N=21, a=2, show_plots=False, mode="distribution")
+    result = shors_simulation(N=21, a=2, mode="distribution")
 
     assert result["success"] is True
     assert result["N"] == 21
@@ -44,10 +78,11 @@ def test_shors_simulation_returns_structured_success(capsys):
     assert result["period"] == 6
     assert set(result["factors"]) == {3, 7}
     assert result["classical_precheck"] is False
+    assert len(result["attempts"]) == 1
 
 
 def test_shors_simulation_returns_structured_classical_precheck(capsys):
-    result = shors_simulation(N=22, show_plots=False, mode="distribution")
+    result = shors_simulation(N=22, mode="distribution")
 
     assert result["success"] is True
     assert result["N"] == 22
@@ -57,7 +92,7 @@ def test_shors_simulation_returns_structured_classical_precheck(capsys):
 
 
 def test_shors_simulation_returns_structured_retry(capsys):
-    result = shors_simulation(N=33, a=2, show_plots=False, mode="distribution")
+    result = shors_simulation(N=33, a=2, mode="distribution")
 
     assert result["success"] is False
     assert result["N"] == 33
@@ -65,6 +100,41 @@ def test_shors_simulation_returns_structured_retry(capsys):
     assert result["period"] is None
     assert result["factors"] is None
     assert "Try a different a" in result["message"]
+
+
+def test_shors_simulation_retries_bases_until_success():
+    result = shors_simulation(N=33, max_attempts=4, random_seed=0, mode="distribution")
+
+    assert result["success"] is True
+    assert result["factors"] is not None
+    assert len(result["attempts"]) >= 1
+    assert len(result["attempts"]) <= 4
+
+
+def test_shors_simulation_supports_sampled_measurements():
+    result = shors_simulation(N=21, a=2, mode="distribution", shots=128, random_seed=1)
+
+    assert result["success"] is True
+    assert result["shots"] == 128
+    assert result["measurement_counts"] is not None
+    assert sum(result["measurement_counts"].values()) == 128
+
+
+def test_sample_measurements_is_seeded_and_normalized():
+    probabilities = compute_probs(15, 2, mode="distribution")
+    sampled_probabilities, counts = sample_measurements(probabilities, shots=64, random_seed=4)
+
+    assert np.isclose(sampled_probabilities.sum(), 1.0)
+    assert sum(counts.values()) == 64
+
+
+def test_matrix_mode_memory_guard_returns_structured_retry(capsys):
+    result = shors_simulation(N=35, a=2, sparse=True, mode="matrix")
+
+    assert result["success"] is False
+    assert result["period"] is None
+    assert result["factors"] is None
+    assert "Use mode='distribution'" in result["message"]
 
 
 def test_matrix_mode_matches_distribution_mode_for_small_case():

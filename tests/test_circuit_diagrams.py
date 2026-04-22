@@ -1,7 +1,11 @@
 import subprocess
 import sys
 
-from src.quantum_part.circuit_diagrams import draw_circuit_diagrams
+import pytest
+
+pytest.importorskip("qiskit")
+
+from shors_algorithm_simulation.quantum.circuits import draw_circuit_diagrams
 
 
 def test_draw_circuit_diagrams_creates_png_files(tmp_path):
@@ -21,7 +25,8 @@ def test_circuit_diagram_cli_creates_requested_output(tmp_path):
     result = subprocess.run(
         [
             sys.executable,
-            "examples/circuit_diagrams_example.py",
+            "-m",
+            "examples.circuit_diagrams_example",
             "--N",
             "15",
             "--a",

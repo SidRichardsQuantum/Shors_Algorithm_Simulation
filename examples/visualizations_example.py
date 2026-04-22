@@ -1,11 +1,8 @@
 import argparse
-import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.plots_and_period.find_period import find_period
-from src.plots_and_period.probability_plot import compute_probs
-from src.plots_and_period.visualizations import (
+from shors_algorithm_simulation.period import find_period
+from shors_algorithm_simulation.probabilities import compute_probs
+from shors_algorithm_simulation.plotting.diagnostics import (
     plot_continued_fraction_diagnostics,
     plot_marked_probability_distribution,
     plot_matrix_distribution_comparison,

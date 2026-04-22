@@ -13,13 +13,13 @@ The oracle decomposition is intentionally tiny. It shows how an oracle can be bu
 Generate the standard circuit diagram set with:
 
 ```bash
-python examples/circuit_diagrams_example.py --N 15 --a 2
+python -m examples.circuit_diagrams_example --N 15 --a 2
 ```
 
 or call the module directly:
 
 ```bash
-python -m src.quantum_part.circuit_diagrams --N 15 --a 2 --output-dir images
+python -m shors_algorithm_simulation.quantum.circuits --N 15 --a 2 --output-dir images
 ```
 
 This creates:
@@ -28,10 +28,10 @@ This creates:
 - `images/inverse_qft_decomposition_4_qubits.png`
 - `images/oracle_decomposition_N=15_a=2_xqubits=2.png`
 
-The older compatibility command still regenerates the compact circuit used in the README:
+The compact circuit used in the README can be regenerated with:
 
 ```bash
-python src/quantum_part/quantum_circuit.py
+python -m shors_algorithm_simulation.quantum.quantum_circuit
 ```
 
 ## Register Layout

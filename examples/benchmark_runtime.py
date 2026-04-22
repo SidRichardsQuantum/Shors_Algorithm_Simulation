@@ -1,7 +1,4 @@
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.plots_and_period.runtime_plot import benchmark_runtime_table
+from shors_algorithm_simulation.plotting.runtime import benchmark_runtime_table
 
 
 if __name__ == "__main__":

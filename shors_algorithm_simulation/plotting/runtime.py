@@ -1,23 +1,20 @@
-import sys
+from __future__ import annotations
+
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
 
 import numpy as np
 from math import log2, ceil
-import matplotlib
-matplotlib.use('Agg') # Use non-interactive backend
-import matplotlib.pyplot as plt
 import time
 import csv
-from main import shors_simulation
+from shors_algorithm_simulation.core import shors_simulation
+from shors_algorithm_simulation.plotting.matplotlib_helpers import get_pyplot
 
 
-def timer(N, a, sparse=True, mode="distribution"):
+def timer(N: int, a: int, sparse: bool = True, mode: str = "distribution") -> float | None:
     """Time a single Shor's algorithm simulation."""
     start_time = time.time()
     try:
-        shors_simulation(N=N, a=a, show_plots=False, sparse=sparse, mode=mode)
+        shors_simulation(N=N, a=a, sparse=sparse, mode=mode)
         end_time = time.time()
         return end_time - start_time
     except Exception as e:
@@ -26,12 +23,12 @@ def timer(N, a, sparse=True, mode="distribution"):
 
 
 def benchmark_runtime_table(
-    test_cases,
-    repeats=3,
-    sparse=True,
-    output_csv="images/runtime_benchmark.csv",
-    mode="distribution",
-):
+    test_cases: list[tuple[int, int]],
+    repeats: int = 3,
+    sparse: bool = True,
+    output_csv: str = "images/runtime_benchmark.csv",
+    mode: str = "distribution",
+) -> list[dict[str, object]]:
     """
     Benchmark Shor's simulation and save tabular results to CSV.
 
@@ -95,8 +92,15 @@ def benchmark_runtime_table(
     return rows
 
 
-def run_runtime_analysis(test_cases, repeats=3, sparse=True, mode="distribution"):
+def run_runtime_analysis(
+    test_cases: list[tuple[int, int]],
+    repeats: int = 3,
+    sparse: bool = True,
+    mode: str = "distribution",
+    output_dir: str = "images",
+) -> tuple[list[int], list[int], list[float], list[float]]:
     """Run Shor's algorithm for different (N, a) and plot runtimes."""
+    plt = get_pyplot()
     N_values = []
     qubits_required = []
     runtimes = []
@@ -152,9 +156,11 @@ def run_runtime_analysis(test_cases, repeats=3, sparse=True, mode="distribution"
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     
-    # Save the plot in images directory
-    os.makedirs('images', exist_ok=True)
-    output_file = f'images/runtime_vs_qubit_sparse_{sparse}_mode_{mode}_repeats_{repeats}.png'
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(
+        output_dir,
+        f"runtime_vs_qubit_sparse_{sparse}_mode_{mode}_repeats_{repeats}.png",
+    )
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"\nPlot saved as: {output_file}")
     

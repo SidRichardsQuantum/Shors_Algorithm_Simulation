@@ -67,24 +67,20 @@ The peaks are not all exactly equally high because $4096$ is not divisible by $1
 Running:
 
 ```python
-shors_simulation(N=35, a=2, show_plots=True, sparse=True, mode="distribution")
+from shors_algorithm_simulation import shors_simulation
+
+shors_simulation(N=35, a=2, sparse=True, mode="distribution")
 ```
 
 prints:
 
 ```
 N = 35
-Running Classical Checks...
-Classical checks passed.
-a = 2.
-Proceeding to quantum algorithm...
+Attempt 1: a = 2
 The period r = 12 is even.
 a^(r/2) + 1 = 30, and gcd(30, 35) = 5
 a^(r/2) - 1 = 28, and gcd(28, 35) = 7
 The factors of N = 35 are 5 and 7.
-----------------------------------------
-
-Plot saved as: images/first_register_probabilities_N=35_a=2.png
 ```
 
 The function also returns a structured result dictionary containing the recovered period and factors.
@@ -173,7 +169,7 @@ The two distributions match up to floating-point error for $N=15, a=2$.
 
 ## Runtimes Vs Required Qubits
 
-Running `examples/runtimes_test.py` calls `run_runtime_analysis()` from `src/plots_and_period/runtime_plot.py`.
+Running `python -m examples.runtimes_test` calls `run_runtime_analysis()` from `shors_algorithm_simulation.plotting.runtime`.
 It measures repeated runtimes for deterministic pairs `(N, a)` known to yield useful periods.
 
 Example cases include:

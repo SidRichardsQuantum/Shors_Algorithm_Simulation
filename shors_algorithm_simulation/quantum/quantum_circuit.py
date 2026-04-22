@@ -1,9 +1,4 @@
-import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
-from src.quantum_part.circuit_diagrams import draw_circuit, build_period_finding_circuit
+from shors_algorithm_simulation.quantum.circuits import build_period_finding_circuit, draw_circuit
 
 
 if __name__ == "__main__":

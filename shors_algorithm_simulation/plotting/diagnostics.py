@@ -1,20 +1,18 @@
+from __future__ import annotations
+
 import csv
 import os
 from math import ceil, log2
 
 import numpy as np
 
-os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-
-from src.plots_and_period.find_period import find_period, period_candidate_diagnostics
-from src.plots_and_period.plot_formatting import ket_label, set_ket_xticks
-from src.plots_and_period.probability_plot import compute_probs
+from shors_algorithm_simulation.period import find_period, period_candidate_diagnostics
+from shors_algorithm_simulation.plotting.formatting import ket_label, set_ket_xticks
+from shors_algorithm_simulation.plotting.matplotlib_helpers import get_pyplot
+from shors_algorithm_simulation.probabilities import compute_probs
 
 
-def multiplicative_order(N, a):
+def multiplicative_order(N: int, a: int) -> int | None:
     """Return the classical order of a mod N for diagnostics."""
     value = 1
     for r in range(1, N + 1):
@@ -24,8 +22,14 @@ def multiplicative_order(N, a):
     return None
 
 
-def plot_oracle_period_pattern(N, a, output_dir="images", max_points=None):
+def plot_oracle_period_pattern(
+    N: int,
+    a: int,
+    output_dir: str = "images",
+    max_points: int | None = None,
+) -> str:
     """Plot x -> a^x mod N to show the hidden periodicity."""
+    plt = get_pyplot()
     os.makedirs(output_dir, exist_ok=True)
 
     Q = 2 ** (2 * ceil(log2(N)))
@@ -54,14 +58,15 @@ def plot_oracle_period_pattern(N, a, output_dir="images", max_points=None):
 
 
 def plot_marked_probability_distribution(
-    N,
-    a,
-    probabilities=None,
-    period=None,
-    output_dir="images",
-    mode="distribution",
-):
+    N: int,
+    a: int,
+    probabilities: np.ndarray | None = None,
+    period: int | None = None,
+    output_dir: str = "images",
+    mode: str = "distribution",
+) -> str:
     """Plot first-register probabilities with expected peak markers for a recovered period."""
+    plt = get_pyplot()
     os.makedirs(output_dir, exist_ok=True)
 
     probabilities = probabilities if probabilities is not None else compute_probs(N, a, mode=mode)
@@ -90,14 +95,15 @@ def plot_marked_probability_distribution(
 
 
 def plot_continued_fraction_diagnostics(
-    N,
-    a,
-    probabilities=None,
-    output_dir="images",
-    top_n=12,
-    mode="distribution",
-):
+    N: int,
+    a: int,
+    probabilities: np.ndarray | None = None,
+    output_dir: str = "images",
+    top_n: int = 12,
+    mode: str = "distribution",
+) -> dict[str, object]:
     """Save a continued-fraction candidate CSV and a compact candidate plot."""
+    plt = get_pyplot()
     os.makedirs(output_dir, exist_ok=True)
 
     probabilities = probabilities if probabilities is not None else compute_probs(N, a, mode=mode)
@@ -151,8 +157,14 @@ def plot_continued_fraction_diagnostics(
     return {"plot": plot_file, "csv": csv_file, "rows": rows}
 
 
-def plot_matrix_distribution_comparison(N, a, output_dir="images", sparse=True):
+def plot_matrix_distribution_comparison(
+    N: int,
+    a: int,
+    output_dir: str = "images",
+    sparse: bool = True,
+) -> str:
     """Overlay matrix and distribution mode probabilities for a small case."""
+    plt = get_pyplot()
     os.makedirs(output_dir, exist_ok=True)
 
     distribution = compute_probs(N, a, sparse=sparse, mode="distribution")
@@ -182,7 +194,12 @@ def plot_matrix_distribution_comparison(N, a, output_dir="images", sparse=True):
     return output_file
 
 
-def generate_visualization_set(N, a, output_dir="images", mode="distribution"):
+def generate_visualization_set(
+    N: int,
+    a: int,
+    output_dir: str = "images",
+    mode: str = "distribution",
+) -> dict[str, object]:
     """Generate the main educational visualization set for one input."""
     probabilities = compute_probs(N, a, mode=mode)
     outputs = {

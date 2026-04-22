@@ -1,46 +1,73 @@
+from __future__ import annotations
+
 import argparse
 import os
 from math import ceil, log2, pi
+from typing import Any
 
-os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
-
-from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
-from qiskit.circuit.gate import Gate
+from shors_algorithm_simulation.plotting.matplotlib_helpers import get_pyplot
 
 try:
-    from qiskit.circuit.library import QFTGate
-except ImportError:
+    from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
+    from qiskit.circuit.gate import Gate
+
+    try:
+        from qiskit.circuit.library import QFTGate
+    except ImportError:
+        QFTGate = None
+        from qiskit.circuit.library import QFT
+except ImportError as error:
+    ClassicalRegister = None
+    QuantumCircuit = None
+    QuantumRegister = None
+    Gate = None
     QFTGate = None
-    from qiskit.circuit.library import QFT
+    QFT = None
+    QISKIT_IMPORT_ERROR = error
+else:
+    QISKIT_IMPORT_ERROR = None
 
 
-class LabeledBlockGate(Gate):
+def _require_qiskit() -> None:
+    """Raise a clear error if optional circuit dependencies are unavailable."""
+    if QISKIT_IMPORT_ERROR is not None:
+        raise ImportError(
+            "Circuit diagram helpers require optional dependencies. "
+            "Install them with `pip install .[circuits]` or "
+            "`pip install -r requirements-circuits.txt`."
+        ) from QISKIT_IMPORT_ERROR
+
+
+class LabeledBlockGate(Gate if Gate is not None else object):
     """Opaque circuit block used for educational diagrams."""
 
     def __init__(self, name, num_qubits, label):
+        _require_qiskit()
         super().__init__(name, num_qubits, [], label=label)
 
 
-def register_sizes_from_N(N):
+def register_sizes_from_N(N: int) -> tuple[int, int, int]:
     """Return (n, period_qubits, function_qubits) for the simulator layout."""
     n_qubits = ceil(log2(N))
     return n_qubits, 2 * n_qubits, n_qubits
 
 
-def inverse_qft_gate(num_qubits):
+def inverse_qft_gate(num_qubits: int) -> Any:
     """Return an inverse QFT gate compatible with the installed Qiskit version."""
+    _require_qiskit()
     if QFTGate is not None:
         return QFTGate(num_qubits).inverse()
     return QFT(num_qubits, inverse=True)
 
 
 def build_period_finding_circuit(
-    period_qubits,
-    function_qubits,
-    oracle_label="Oracle U_a",
-    include_measurements=True,
-):
+    period_qubits: int,
+    function_qubits: int,
+    oracle_label: str = "Oracle U_a",
+    include_measurements: bool = True,
+) -> Any:
     """Build the high-level Shor period-finding circuit."""
+    _require_qiskit()
     period = QuantumRegister(period_qubits, "|x⟩")
     function = QuantumRegister(function_qubits, "|y⟩")
 
@@ -63,7 +90,7 @@ def build_period_finding_circuit(
     return circuit
 
 
-def build_matrix_mode_circuit(N, a, include_measurements=True):
+def build_matrix_mode_circuit(N: int, a: int, include_measurements: bool = True) -> Any:
     """Build a circuit matching explicit matrix-mode register sizes."""
     _, period_qubits, function_qubits = register_sizes_from_N(N)
     label = f"Matrix oracle U_{a}\n|x⟩|y⟩ → |x⟩|y xor {a}^x mod {N}⟩"
@@ -75,7 +102,7 @@ def build_matrix_mode_circuit(N, a, include_measurements=True):
     )
 
 
-def build_distribution_mode_concept_circuit(N, a, include_measurements=True):
+def build_distribution_mode_concept_circuit(N: int, a: int, include_measurements: bool = True) -> Any:
     """
     Build a conceptual diagram for distribution mode.
 
@@ -93,8 +120,9 @@ def build_distribution_mode_concept_circuit(N, a, include_measurements=True):
     )
 
 
-def build_inverse_qft_decomposition_circuit(num_qubits=4, include_swaps=True):
+def build_inverse_qft_decomposition_circuit(num_qubits: int = 4, include_swaps: bool = True) -> Any:
     """Build an explicit inverse-QFT gate decomposition."""
+    _require_qiskit()
     register = QuantumRegister(num_qubits, "|x⟩")
     circuit = QuantumCircuit(register)
 
@@ -113,13 +141,14 @@ def build_inverse_qft_decomposition_circuit(num_qubits=4, include_swaps=True):
     return circuit
 
 
-def build_explicit_oracle_decomposition_circuit(N=15, a=2, exponent_qubits=2):
+def build_explicit_oracle_decomposition_circuit(N: int = 15, a: int = 2, exponent_qubits: int = 2) -> Any:
     """
     Build a tiny explicit XOR-oracle decomposition using multi-controlled X gates.
 
     This is intended for small educational diagrams. It implements
     |x⟩|y⟩ -> |x⟩|y xor (a^x mod N)⟩ over the displayed x values.
     """
+    _require_qiskit()
     function_qubits = ceil(log2(N))
     exponent = QuantumRegister(exponent_qubits, "|x⟩")
     function = QuantumRegister(function_qubits, "|y⟩")
@@ -149,8 +178,9 @@ def build_explicit_oracle_decomposition_circuit(N=15, a=2, exponent_qubits=2):
     return circuit
 
 
-def draw_circuit(circuit, output_file):
+def draw_circuit(circuit: Any, output_file: str) -> str:
     """Draw a circuit to a PNG file and return the output path."""
+    get_pyplot()
     os.makedirs(os.path.dirname(output_file) or ".", exist_ok=True)
     figure = circuit.draw(output="mpl", filename=output_file)
 
@@ -160,7 +190,12 @@ def draw_circuit(circuit, output_file):
     return output_file
 
 
-def draw_circuit_diagrams(N=15, a=2, output_dir="images", include_measurements=True):
+def draw_circuit_diagrams(
+    N: int = 15,
+    a: int = 2,
+    output_dir: str = "images",
+    include_measurements: bool = True,
+) -> dict[str, object]:
     """Generate the standard educational circuit diagram set."""
     n_qubits, period_qubits, function_qubits = register_sizes_from_N(N)
     outputs = {}
@@ -198,7 +233,7 @@ def draw_circuit_diagrams(N=15, a=2, output_dir="images", include_measurements=T
     return outputs
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate Qiskit circuit diagrams for Shor period finding.")
     parser.add_argument("--N", type=int, default=15, help="Integer being factored.")
     parser.add_argument("--a", type=int, default=2, help="Base for modular exponentiation.")
@@ -211,7 +246,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     args = parse_args()
     outputs = draw_circuit_diagrams(
         N=args.N,
