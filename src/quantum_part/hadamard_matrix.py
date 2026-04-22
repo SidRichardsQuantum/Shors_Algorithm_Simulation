@@ -2,7 +2,7 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 
-def hadamard_matrix(n_qubits):
+def hadamard_matrix(first_register_qubits, second_register_qubits=None):
     """
     Create Hadamard operator for the first register only.
 
@@ -10,14 +10,18 @@ def hadamard_matrix(n_qubits):
     where all states have equal amplitude.
     """
 
-    M = 2 ** n_qubits
+    if second_register_qubits is None:
+        second_register_qubits = first_register_qubits
+
+    Q = 2 ** first_register_qubits
+    M = 2 ** second_register_qubits
 
     # Single qubit Hadamard
     H = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)
 
     # Multi-qubit Hadamard for first register
     H_first_register = H
-    for i in range(n_qubits - 1):
+    for i in range(first_register_qubits - 1):
         H_first_register = np.kron(H_first_register, H)
 
     # Identity for second register
@@ -29,22 +33,19 @@ def hadamard_matrix(n_qubits):
     return H_total_register
 
 
-def hadamard_matrix_sparse(n_qubits):
+def hadamard_matrix_sparse(first_register_qubits, second_register_qubits=None):
     """
     Efficient sparse matrix version of Hadamard operator.
     
-    Hadamard operation: |x⟩|y⟩ → (2^(-M/2)) Σ_z (-1)^(x·z) |z⟩|y⟩
+    Hadamard operation: |x⟩|y⟩ → (2^(-n/2)) Σ_z (-1)^(x·z) |z⟩|y⟩
     """
 
-    M = 2 ** n_qubits
-    total_size = M ** 2
-    
-    # Create arrays for all possible input states
-    input_states = np.arange(total_size)
-    
-    # Extract x and y from input states: input_state = x * M + y
-    x_vals = input_states // M
-    y_vals = input_states % M
+    if second_register_qubits is None:
+        second_register_qubits = first_register_qubits
+
+    Q = 2 ** first_register_qubits
+    M = 2 ** second_register_qubits
+    total_size = Q * M
     
     # For each input state |x⟩|y⟩, we need M output states |z⟩|y⟩ for all z
     # Create arrays to store row indices, column indices, and data
@@ -52,14 +53,14 @@ def hadamard_matrix_sparse(n_qubits):
     col_indices = []
     data_values = []
     
-    normalization = 1.0 / np.sqrt(2 ** n_qubits)
+    normalization = 1.0 / np.sqrt(Q)
     
     for input_idx in range(total_size):
         x = input_idx // M
         y = input_idx % M
         
         # For this input state |x⟩|y⟩, create superposition over all |z⟩|y⟩
-        for z in range(M):
+        for z in range(Q):
             output_idx = z * M + y
             
             # Compute phase factor (-1)^(x·z) where · is bitwise dot product

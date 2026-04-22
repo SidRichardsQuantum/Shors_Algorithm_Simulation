@@ -18,11 +18,14 @@ def iqft_first_register(M):
     return iqft_first_register
 
 
-def iqft_matrix(M):
+def iqft_matrix(first_register_dimension, second_register_dimension=None):
     """Create inverse QFT operator for the total register"""
 
-    I_second_register = np.eye(M, dtype=complex)
-    iqft_total_register = np.kron(iqft_first_register(M), I_second_register)
+    if second_register_dimension is None:
+        second_register_dimension = first_register_dimension
+
+    I_second_register = np.eye(second_register_dimension, dtype=complex)
+    iqft_total_register = np.kron(iqft_first_register(first_register_dimension), I_second_register)
 
     return iqft_total_register
 
@@ -58,14 +61,17 @@ def iqft_first_register_sparse(M):
     return iqft_sparse
 
 
-def iqft_matrix_sparse(M):
+def iqft_matrix_sparse(first_register_dimension, second_register_dimension=None):
     """Create sparse inverse QFT operator for the total register"""
 
+    if second_register_dimension is None:
+        second_register_dimension = first_register_dimension
+
     # Get sparse IQFT for first register
-    iqft_first = iqft_first_register_sparse(M)
+    iqft_first = iqft_first_register_sparse(first_register_dimension)
 
     # Sparse identity for second register
-    I_second_register = sparse_eye(M, dtype=complex, format='csr')
+    I_second_register = sparse_eye(second_register_dimension, dtype=complex, format='csr')
 
     # Kronecker product of sparse matrices
     iqft_total_register = sparse_kron(iqft_first, I_second_register, format='csr')

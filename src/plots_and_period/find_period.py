@@ -1,43 +1,86 @@
 import numpy as np
+from fractions import Fraction
 from math import log2, ceil
 from src.plots_and_period.probability_plot import compute_probs
 
 
-def find_period(N, a, sparse=True):
+def find_period(N, a, sparse=True, mode="distribution"):
     """
-    The period is the difference in index between adjacent states with the largest probabilities.
+    Find a useful period using continued fractions.
 
-    This period is quickly checked, and if it isn't correct then a backup period is used.
+    Shor's first register is measured at values close to s * Q / r, where
+    Q ~= N^2 and r is the period. The measured fraction c / Q is converted
+    into period candidates with continued fractions, and only candidates
+    that produce non-trivial factors are accepted.
     """
 
     n_qubits = ceil(log2(N))
-    M = 2 ** n_qubits
+    Q = 2 ** (2 * n_qubits)
 
-    # Find the max probability
-    prob_first_register = compute_probs(N, a, sparse)  # Just compute, don't plot
-    max_prob = np.max(prob_first_register)
+    prob_first_register = compute_probs(N, a, sparse=sparse, mode=mode)
 
-    # Find states with max probability
-    max_indices = np.where(prob_first_register == max_prob)[0]
+    for candidate in _iter_period_candidate_diagnostics(N, a, prob_first_register):
+        for r in candidate["tested_periods"]:
+            if _valid_period_for_factors(N, a, r):
+                return r, prob_first_register
 
-    # Use the difference in indices between the first two states with the maximum probability
-    r = round(M / (max_indices[1] - max_indices[0]))
-    
-    # Backup period candidate found using averages
-    # (Still might not be the correct period)
-    if N != np.gcd((pow(a, r//2) - 1) % N, N) * np.gcd((pow(a, r//2) + 1) % N, N):
-        print("(Using backup period)")
-        # Calculate mean probability
-        prob_first_register = compute_probs(N, a, sparse)  # Just compute, don't plot
-        mean_prob = np.mean(prob_first_register)
-    
-        # Find indices where probability is above the mean
-        above_mean_indices = np.where(prob_first_register >= mean_prob)[0]
+    raise ValueError(f"Could not find a validated period for N={N}, a={a}. Try a different a.")
 
-        # Use the differences between above-mean states to estimate period candidates
-        s = []  # Period candidates list
-        for i in range(1, len(above_mean_indices)):
-            s.append(M * i / (above_mean_indices[i] - above_mean_indices[0]))
-        r = round(np.mean(s))  # Average of the candidates, as an integer
-    
-    return r, prob_first_register  # Return both period and probabilities
+
+def period_candidate_diagnostics(N, a, probabilities, top_n=12):
+    """Return continued-fraction period candidates ordered by measurement probability."""
+    rows = []
+    for row in _iter_period_candidate_diagnostics(N, a, probabilities):
+        rows.append(row)
+        if top_n is not None and len(rows) >= top_n:
+            break
+
+    return rows
+
+
+def _iter_period_candidate_diagnostics(N, a, probabilities):
+    """Yield continued-fraction period candidates ordered by measurement probability."""
+    Q = len(probabilities)
+    candidate_indices = np.argsort(probabilities)[::-1]
+
+    for measured_value in candidate_indices:
+        probability = probabilities[measured_value]
+        if measured_value == 0 or probability == 0:
+            continue
+
+        fraction = Fraction(int(measured_value), Q).limit_denominator(N)
+        tested_periods = list(_period_candidates(fraction.denominator, N))
+        valid_periods = [r for r in tested_periods if _valid_period_for_factors(N, a, r)]
+
+        yield {
+            "measured_value": int(measured_value),
+            "probability": float(probability),
+            "fraction": fraction,
+            "denominator": fraction.denominator,
+            "tested_periods": tested_periods,
+            "valid_periods": valid_periods,
+            "accepted": bool(valid_periods),
+        }
+
+
+def _period_candidates(denominator, N):
+    """Yield a continued-fraction denominator and its possible multiples."""
+    if denominator <= 0:
+        return
+
+    for multiplier in range(1, (N // denominator) + 1):
+        yield denominator * multiplier
+
+
+def _valid_period_for_factors(N, a, r):
+    """A useful Shor period must recover non-trivial factors of N."""
+    if r <= 0 or r % 2 != 0:
+        return False
+
+    if pow(a, r, N) != 1:
+        return False
+
+    factor1 = np.gcd(pow(a, r // 2, N) - 1, N)
+    factor2 = np.gcd(pow(a, r // 2, N) + 1, N)
+
+    return 1 < factor1 < N and 1 < factor2 < N and factor1 * factor2 == N

@@ -1,21 +1,23 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
 
 import numpy as np
 from math import log2, ceil
-import matplotlib.pyplot as plt
 import matplotlib
+matplotlib.use('Agg') # Use non-interactive backend
+import matplotlib.pyplot as plt
 import time
 import csv
 from main import shors_simulation
 
 
-def timer(N, a, sparse=True):
+def timer(N, a, sparse=True, mode="distribution"):
     """Time a single Shor's algorithm simulation."""
     start_time = time.time()
     try:
-        shors_simulation(N=N, a=a, show_plots=False, sparse=sparse)
+        shors_simulation(N=N, a=a, show_plots=False, sparse=sparse, mode=mode)
         end_time = time.time()
         return end_time - start_time
     except Exception as e:
@@ -23,12 +25,18 @@ def timer(N, a, sparse=True):
         return None
 
 
-def benchmark_runtime_table(test_cases, repeats=3, sparse=True, output_csv="images/runtime_benchmark.csv"):
+def benchmark_runtime_table(
+    test_cases,
+    repeats=3,
+    sparse=True,
+    output_csv="images/runtime_benchmark.csv",
+    mode="distribution",
+):
     """
     Benchmark Shor's simulation and save tabular results to CSV.
 
     Each row contains:
-    N, a, qubits, repeats, successes, mean_seconds, std_seconds, min_seconds, max_seconds, sparse
+    N, a, qubits, repeats, successes, mean_seconds, std_seconds, min_seconds, max_seconds, sparse, mode
     """
 
     rows = []
@@ -36,11 +44,11 @@ def benchmark_runtime_table(test_cases, repeats=3, sparse=True, output_csv="imag
     for N, a in test_cases:
         times = []
         for _ in range(repeats):
-            runtime = timer(N, a, sparse=sparse)
+            runtime = timer(N, a, sparse=sparse, mode=mode)
             if runtime is not None:
                 times.append(runtime)
 
-        total_qubits = 2 * ceil(log2(N))
+        total_qubits = 3 * ceil(log2(N))
         if times:
             row = {
                 "N": N,
@@ -53,6 +61,7 @@ def benchmark_runtime_table(test_cases, repeats=3, sparse=True, output_csv="imag
                 "min_seconds": float(np.min(times)),
                 "max_seconds": float(np.max(times)),
                 "sparse": sparse,
+                "mode": mode,
             }
             rows.append(row)
             print(
@@ -75,6 +84,7 @@ def benchmark_runtime_table(test_cases, repeats=3, sparse=True, output_csv="imag
         "min_seconds",
         "max_seconds",
         "sparse",
+        "mode",
     ]
     with open(output_csv, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -85,7 +95,7 @@ def benchmark_runtime_table(test_cases, repeats=3, sparse=True, output_csv="imag
     return rows
 
 
-def run_runtime_analysis(test_cases, repeats=3, sparse=True):
+def run_runtime_analysis(test_cases, repeats=3, sparse=True, mode="distribution"):
     """Run Shor's algorithm for different (N, a) and plot runtimes."""
     N_values = []
     qubits_required = []
@@ -98,14 +108,14 @@ def run_runtime_analysis(test_cases, repeats=3, sparse=True):
         times = []
         
         for run in range(repeats):
-            runtime = timer(N, a, sparse)
+            runtime = timer(N, a, sparse, mode=mode)
             if runtime is not None:
                 times.append(runtime)
         
         if times:
             avg_runtime = np.mean(times)
             std_runtime = np.std(times)
-            total_qubits = 2 * ceil(log2(N))
+            total_qubits = 3 * ceil(log2(N))
             
             N_values.append(N)
             qubits_required.append(total_qubits)
@@ -118,7 +128,6 @@ def run_runtime_analysis(test_cases, repeats=3, sparse=True):
             print(f"N={N}: Failed")
     
     # Create the plots
-    matplotlib.use('Agg') # Use non-interactive backend
     plt.figure(figsize=(15, 10))
     
     # Plot Runtime vs N
@@ -145,7 +154,7 @@ def run_runtime_analysis(test_cases, repeats=3, sparse=True):
     
     # Save the plot in images directory
     os.makedirs('images', exist_ok=True)
-    output_file = f'images/runtime_vs_qubit_sparse_{sparse}_repeats_{repeats}.png'
+    output_file = f'images/runtime_vs_qubit_sparse_{sparse}_mode_{mode}_repeats_{repeats}.png'
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"\nPlot saved as: {output_file}")
     

@@ -5,5 +5,6 @@ from main import shors_simulation
 
 
 if __name__ == "__main__":
-    """Default example N = 15 with a = 7"""
-    shors_simulation(N=35, a=2, show_plots=True, sparse=True)
+    """Run a deterministic factorisation example with plot output."""
+    result = shors_simulation(N=35, a=2, show_plots=True, sparse=True, mode="distribution")
+    print(f"Structured result: factors={result['factors']}, period={result['period']}")

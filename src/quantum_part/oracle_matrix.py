@@ -3,35 +3,49 @@ from math import log2, ceil
 from scipy.sparse import csr_matrix
 
 
-def oracle_matrix(N, a):
+def oracle_matrix(N, a, first_register_qubits=None, second_register_qubits=None):
     """
-    Create unitary oracle operator that maps |x⟩|y⟩ → |x⟩|(y + a^x) mod N⟩.
+    Create a unitary oracle that maps |x⟩|y⟩ → |x⟩|y xor a^x mod N⟩.
 
     This entangles the registers and encodes periodicity.
     """
 
     n_qubits = ceil(log2(N))
-    M = 2 ** n_qubits
-    U = np.zeros((M ** 2, M ** 2), dtype=complex)
-    for x in range(M):
+    if first_register_qubits is None:
+        first_register_qubits = n_qubits
+    if second_register_qubits is None:
+        second_register_qubits = n_qubits
+
+    Q = 2 ** first_register_qubits
+    M = 2 ** second_register_qubits
+    total_size = Q * M
+
+    U = np.zeros((total_size, total_size), dtype=complex)
+    for x in range(Q):
         for y in range(M):
             input_state = x * M + y  # |x⟩|y⟩
-            output_y = (y + pow(a, x, N)) % N
-            output_state = x * M + output_y  # |x⟩|(y + a^x) mod N⟩
+            output_y = y ^ pow(a, x, N)
+            output_state = x * M + output_y  # |x⟩|y xor a^x mod N⟩
             U[output_state, input_state] = 1.0
 
     return U
 
 
-def oracle_matrix_sparse(N, a):
+def oracle_matrix_sparse(N, a, first_register_qubits=None, second_register_qubits=None):
     """Even more efficient version using sparse matrices."""
 
     n_qubits = ceil(log2(N))
-    M = 2 ** n_qubits
-    total_size = M ** 2
+    if first_register_qubits is None:
+        first_register_qubits = n_qubits
+    if second_register_qubits is None:
+        second_register_qubits = n_qubits
+
+    Q = 2 ** first_register_qubits
+    M = 2 ** second_register_qubits
+    total_size = Q * M
 
     # Create arrays for all x and y values
-    x_vals = np.arange(M)
+    x_vals = np.arange(Q)
     y_vals = np.arange(M)
 
     # Create meshgrid for all combinations
@@ -44,7 +58,7 @@ def oracle_matrix_sparse(N, a):
     # Compute input and output states
     input_states = x_flat * M + y_flat
     a_power_x = np.array([pow(a, int(x), N) for x in x_flat])
-    output_y = (y_flat + a_power_x) % N
+    output_y = y_flat ^ a_power_x
     output_states = x_flat * M + output_y
 
     # Create sparse matrix (more memory efficient)

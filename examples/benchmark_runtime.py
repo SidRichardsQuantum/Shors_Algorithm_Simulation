@@ -9,7 +9,7 @@ if __name__ == "__main__":
     benchmark_cases = [
         (15, 2),
         (21, 2),
-        (33, 2),
+        (33, 5),
         (35, 2),
     ]
 
@@ -17,5 +17,6 @@ if __name__ == "__main__":
         test_cases=benchmark_cases,
         repeats=3,
         sparse=True,
-        output_csv="images/runtime_benchmark_sparse_True_repeats_3.csv",
+        output_csv="images/runtime_benchmark_sparse_True_mode_distribution_repeats_3.csv",
+        mode="distribution",
     )

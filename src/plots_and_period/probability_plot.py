@@ -1,51 +1,76 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
 
 import numpy as np
-import matplotlib.pyplot as plt
 from math import log2, ceil
+from src.plots_and_period.plot_formatting import set_ket_xticks
 from src.quantum_part.run_quantum_gates import run_quantum_gates
 
 # Set matplotlib backend for Codespaces
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
+import matplotlib.pyplot as plt
 
 
-def compute_probs(N, a, sparse=True):
+def compute_probs(N, a, sparse=True, mode="distribution"):
     """
     Compute the first register probabilities without plotting.
+
+    Both modes use Q ~= N^2 first-register states, which is the usual Shor
+    period-finding scale. Matrix mode builds and applies the gates directly;
+    distribution mode computes the same ideal first-register distribution
+    without materializing the full matrices.
     """
     n_qubits = ceil(log2(N))
+    Q = 2 ** (2 * n_qubits)
     M = 2 ** n_qubits
 
-    # Run the quantum algorithm
-    phi = run_quantum_gates(N, a, sparse)
+    if mode == "matrix":
+        phi = run_quantum_gates(
+            N,
+            a,
+            sparse=sparse,
+            first_register_qubits=2 * n_qubits,
+            second_register_qubits=n_qubits,
+        )
+        return np.sum(np.abs(phi.reshape(Q, M)) ** 2, axis=1)
 
-    # Extract the first register state probabilities
-    prob_first_register = np.zeros(M)
-    for x in range(M):
-        for y in range(M):
-            state_index = x * M + y
-            prob_first_register[x] += np.abs(phi[state_index]) ** 2
+    if mode != "distribution":
+        raise ValueError("mode must be 'distribution' or 'matrix'")
+
+    oracle_values = np.empty(Q, dtype=int)
+    value = 1
+    for x in range(Q):
+        oracle_values[x] = value
+        value = (value * a) % N
+
+    prob_first_register = np.zeros(Q)
+    for y in np.unique(oracle_values):
+        indicator = (oracle_values == y).astype(float)
+        amplitudes = np.fft.ifft(indicator)
+        prob_first_register += np.abs(amplitudes) ** 2
 
     return prob_first_register
+
 
 def plot_probs(N, a, prob_first_register, show_plots=True, sparse=True):
     """
     Plot the probabilities that were already computed.
     """
-    n_qubits = ceil(log2(N))
-    M = 2 ** n_qubits
+    Q = len(prob_first_register)
+    tick_step = max(1, Q // 16)
 
     plt.figure(figsize=(10, 6))
-    plt.bar(range(M), prob_first_register, alpha=0.7,
+    plt.bar(range(Q), prob_first_register, alpha=0.7,
             color='lightcoral', edgecolor='darkred')
-    plt.xlabel('First Register State |x⟩')
+    plt.xlabel('First Register State')
     plt.ylabel('Probability')
     plt.title(f'First Register Measurement Probabilities\n(Period detection for N={N}, a={a})')
     plt.grid(True, alpha=0.3)
-    plt.xticks(range(0, M, n_qubits // 2), [f'|{x}⟩' for x in range(0, M, n_qubits // 2)])
+    axis = plt.gca()
+    set_ket_xticks(axis, range(0, Q, tick_step))
     plt.tight_layout()
     print('-' * 40)
 
