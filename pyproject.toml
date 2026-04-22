@@ -22,9 +22,11 @@ circuits = [
 ]
 test = [
     "pytest",
+    "setuptools>=68",
 ]
 dev = [
     "pytest",
+    "setuptools>=68",
     "qiskit",
     "pylatexenc",
     "black",
