@@ -9,9 +9,13 @@ from shors_algorithm_simulation.probabilities import compute_probs
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Classically simulate Shor's period-finding algorithm.")
+    parser = argparse.ArgumentParser(
+        description="Classically simulate Shor's period-finding algorithm."
+    )
     parser.add_argument("--N", type=int, default=15, help="Integer to factor.")
-    parser.add_argument("--a", type=int, default=None, help="Base for modular exponentiation.")
+    parser.add_argument(
+        "--a", type=int, default=None, help="Base for modular exponentiation."
+    )
     parser.add_argument(
         "--mode",
         choices=["distribution", "matrix"],
@@ -66,7 +70,9 @@ def print_human_result(result: ShorsResult) -> None:
         print(attempt["message"])
         if attempt["shots"] is not None:
             distinct = len(attempt["measurement_counts"] or {})
-            print(f"Sampled measurements: shots={attempt['shots']}, distinct outcomes={distinct}")
+            print(
+                f"Sampled measurements: shots={attempt['shots']}, distinct outcomes={distinct}"
+            )
         if index != len(result["attempts"]):
             print("-" * 40)
 

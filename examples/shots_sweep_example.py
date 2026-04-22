@@ -8,7 +8,6 @@ from collections.abc import Sequence
 from shors_algorithm_simulation import shors_simulation
 from shors_algorithm_simulation.plotting.matplotlib_helpers import get_pyplot
 
-
 DEFAULT_SHOTS = (16, 32, 64, 128, 256, 512, 1024)
 
 
@@ -49,7 +48,10 @@ def run_shots_sweep(
 
     csv_path = os.path.join(output_dir, f"shots_sweep_N={N}_a={a}_trials={trials}.csv")
     with open(csv_path, "w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["N", "a", "shots", "trials", "successes", "success_rate"])
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=["N", "a", "shots", "trials", "successes", "success_rate"],
+        )
         writer.writeheader()
         writer.writerows(rows)
 
@@ -80,13 +82,32 @@ def _plot_shots_sweep(rows: list[dict[str, object]], output_file: str) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Plot sampled-measurement success rate versus shots.")
-    parser.add_argument("--N", type=int, default=21, help="Composite integer to factor.")
-    parser.add_argument("--a", type=int, default=2, help="Base for modular exponentiation.")
-    parser.add_argument("--shots", nargs="+", type=int, default=list(DEFAULT_SHOTS), help="Shot counts to test.")
+    parser = argparse.ArgumentParser(
+        description="Plot sampled-measurement success rate versus shots."
+    )
+    parser.add_argument(
+        "--N", type=int, default=21, help="Composite integer to factor."
+    )
+    parser.add_argument(
+        "--a", type=int, default=2, help="Base for modular exponentiation."
+    )
+    parser.add_argument(
+        "--shots",
+        nargs="+",
+        type=int,
+        default=list(DEFAULT_SHOTS),
+        help="Shot counts to test.",
+    )
     parser.add_argument("--trials", type=int, default=20, help="Trials per shot count.")
-    parser.add_argument("--seed", type=int, default=0, help="Base random seed for reproducible sampling.")
-    parser.add_argument("--output-dir", default="images", help="Directory for generated CSV and plot.")
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=0,
+        help="Base random seed for reproducible sampling.",
+    )
+    parser.add_argument(
+        "--output-dir", default="images", help="Directory for generated CSV and plot."
+    )
     return parser.parse_args()
 
 

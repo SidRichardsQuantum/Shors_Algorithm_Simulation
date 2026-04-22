@@ -102,7 +102,9 @@ def build_matrix_mode_circuit(N: int, a: int, include_measurements: bool = True)
     )
 
 
-def build_distribution_mode_concept_circuit(N: int, a: int, include_measurements: bool = True) -> Any:
+def build_distribution_mode_concept_circuit(
+    N: int, a: int, include_measurements: bool = True
+) -> Any:
     """
     Build a conceptual diagram for distribution mode.
 
@@ -120,7 +122,9 @@ def build_distribution_mode_concept_circuit(N: int, a: int, include_measurements
     )
 
 
-def build_inverse_qft_decomposition_circuit(num_qubits: int = 4, include_swaps: bool = True) -> Any:
+def build_inverse_qft_decomposition_circuit(
+    num_qubits: int = 4, include_swaps: bool = True
+) -> Any:
     """Build an explicit inverse-QFT gate decomposition."""
     _require_qiskit()
     register = QuantumRegister(num_qubits, "|x⟩")
@@ -141,7 +145,9 @@ def build_inverse_qft_decomposition_circuit(num_qubits: int = 4, include_swaps: 
     return circuit
 
 
-def build_explicit_oracle_decomposition_circuit(N: int = 15, a: int = 2, exponent_qubits: int = 2) -> Any:
+def build_explicit_oracle_decomposition_circuit(
+    N: int = 15, a: int = 2, exponent_qubits: int = 2
+) -> Any:
     """
     Build a tiny explicit XOR-oracle decomposition using multi-controlled X gates.
 
@@ -155,7 +161,7 @@ def build_explicit_oracle_decomposition_circuit(N: int = 15, a: int = 2, exponen
     circuit = QuantumCircuit(exponent, function)
 
     controls = list(exponent)
-    for x_value in range(2 ** exponent_qubits):
+    for x_value in range(2**exponent_qubits):
         oracle_value = pow(a, x_value, N)
         zero_controls = [
             bit_index
@@ -214,14 +220,21 @@ def draw_circuit_diagrams(
     iqft = build_inverse_qft_decomposition_circuit(num_qubits=min(period_qubits, 4))
     outputs["inverse_qft"] = draw_circuit(
         iqft,
-        os.path.join(output_dir, f"inverse_qft_decomposition_{min(period_qubits, 4)}_qubits.png"),
+        os.path.join(
+            output_dir, f"inverse_qft_decomposition_{min(period_qubits, 4)}_qubits.png"
+        ),
     )
 
     toy_exponent_qubits = min(n_qubits, 2)
-    oracle = build_explicit_oracle_decomposition_circuit(N=N, a=a, exponent_qubits=toy_exponent_qubits)
+    oracle = build_explicit_oracle_decomposition_circuit(
+        N=N, a=a, exponent_qubits=toy_exponent_qubits
+    )
     outputs["explicit_oracle"] = draw_circuit(
         oracle,
-        os.path.join(output_dir, f"oracle_decomposition_N={N}_a={a}_xqubits={toy_exponent_qubits}.png"),
+        os.path.join(
+            output_dir,
+            f"oracle_decomposition_N={N}_a={a}_xqubits={toy_exponent_qubits}.png",
+        ),
     )
 
     outputs["registers"] = {
@@ -234,10 +247,16 @@ def draw_circuit_diagrams(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate Qiskit circuit diagrams for Shor period finding.")
+    parser = argparse.ArgumentParser(
+        description="Generate Qiskit circuit diagrams for Shor period finding."
+    )
     parser.add_argument("--N", type=int, default=15, help="Integer being factored.")
-    parser.add_argument("--a", type=int, default=2, help="Base for modular exponentiation.")
-    parser.add_argument("--output-dir", default="images", help="Directory for generated PNG files.")
+    parser.add_argument(
+        "--a", type=int, default=2, help="Base for modular exponentiation."
+    )
+    parser.add_argument(
+        "--output-dir", default="images", help="Directory for generated PNG files."
+    )
     parser.add_argument(
         "--no-measurements",
         action="store_true",

@@ -16,8 +16,8 @@ def oracle_matrix(N, a, first_register_qubits=None, second_register_qubits=None)
     if second_register_qubits is None:
         second_register_qubits = n_qubits
 
-    Q = 2 ** first_register_qubits
-    M = 2 ** second_register_qubits
+    Q = 2**first_register_qubits
+    M = 2**second_register_qubits
     total_size = Q * M
 
     U = np.zeros((total_size, total_size), dtype=complex)
@@ -40,8 +40,8 @@ def oracle_matrix_sparse(N, a, first_register_qubits=None, second_register_qubit
     if second_register_qubits is None:
         second_register_qubits = n_qubits
 
-    Q = 2 ** first_register_qubits
-    M = 2 ** second_register_qubits
+    Q = 2**first_register_qubits
+    M = 2**second_register_qubits
     total_size = Q * M
 
     # Create arrays for all x and y values
@@ -49,7 +49,7 @@ def oracle_matrix_sparse(N, a, first_register_qubits=None, second_register_qubit
     y_vals = np.arange(M)
 
     # Create meshgrid for all combinations
-    X, Y = np.meshgrid(x_vals, y_vals, indexing='ij')
+    X, Y = np.meshgrid(x_vals, y_vals, indexing="ij")
 
     # Flatten to get 1D arrays
     x_flat = X.flatten()
@@ -63,7 +63,8 @@ def oracle_matrix_sparse(N, a, first_register_qubits=None, second_register_qubit
 
     # Create sparse matrix (more memory efficient)
     data = np.ones(total_size, dtype=complex)
-    U_sparse = csr_matrix((data, (output_states, input_states)),
-                          shape=(total_size, total_size))
+    U_sparse = csr_matrix(
+        (data, (output_states, input_states)), shape=(total_size, total_size)
+    )
 
     return U_sparse

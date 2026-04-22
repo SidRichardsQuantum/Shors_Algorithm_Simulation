@@ -1,7 +1,11 @@
 import numpy as np
 import pytest
 
-from shors_algorithm_simulation import compute_probs, sample_measurements, shors_simulation
+from shors_algorithm_simulation import (
+    compute_probs,
+    sample_measurements,
+    shors_simulation,
+)
 from shors_algorithm_simulation.period import find_period
 from shors_algorithm_simulation.plotting.diagnostics import (
     generate_visualization_set,
@@ -122,7 +126,9 @@ def test_shors_simulation_supports_sampled_measurements():
 
 def test_sample_measurements_is_seeded_and_normalized():
     probabilities = compute_probs(15, 2, mode="distribution")
-    sampled_probabilities, counts = sample_measurements(probabilities, shots=64, random_seed=4)
+    sampled_probabilities, counts = sample_measurements(
+        probabilities, shots=64, random_seed=4
+    )
 
     assert np.isclose(sampled_probabilities.sum(), 1.0)
     assert sum(counts.values()) == 64
@@ -147,7 +153,9 @@ def test_matrix_mode_matches_distribution_mode_for_small_case():
 
 
 def test_sparse_oracle_is_a_permutation_matrix_for_small_case():
-    oracle = oracle_matrix_sparse(15, 2, first_register_qubits=4, second_register_qubits=4)
+    oracle = oracle_matrix_sparse(
+        15, 2, first_register_qubits=4, second_register_qubits=4
+    )
 
     assert np.all(oracle.getnnz(axis=0) == 1)
     assert np.all(oracle.getnnz(axis=1) == 1)
@@ -159,7 +167,9 @@ def test_visualization_files_are_created(tmp_path):
 
     files = [
         plot_oracle_period_pattern(15, 2, output_dir=output_dir),
-        plot_marked_probability_distribution(15, 2, probabilities=probabilities, period=4, output_dir=output_dir),
+        plot_marked_probability_distribution(
+            15, 2, probabilities=probabilities, period=4, output_dir=output_dir
+        ),
         plot_matrix_distribution_comparison(15, 2, output_dir=output_dir),
     ]
     diagnostics = plot_continued_fraction_diagnostics(

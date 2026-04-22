@@ -9,7 +9,7 @@ def is_perfect_power(N: int) -> tuple[bool, int | None, int | None]:
     """Check if N is a perfect power."""
     for k in range(2, int(np.log2(N)) + 1):
         p = round(N ** (1 / k))
-        if p ** k == N:
+        if p**k == N:
             return True, p, k
     return False, None, None
 
@@ -92,7 +92,9 @@ def _build_factor_message(
     factors = (primary_factor, secondary_factor)
 
     if N == primary_factor * secondary_factor:
-        return f"{base_message}\nThe factors of N = {N} are {factors[0]} and {factors[1]}."
+        return (
+            f"{base_message}\nThe factors of N = {N} are {factors[0]} and {factors[1]}."
+        )
     return (
         f"{base_message}\n"
         f"The factors of N = {N} are not {factors[0]} and {factors[1]}.\n"

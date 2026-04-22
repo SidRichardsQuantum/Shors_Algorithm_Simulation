@@ -12,8 +12,10 @@ def iqft_first_register(M):
 
     iqft_first_register = np.zeros((M, M), dtype=complex)
     for k in range(M):
-        for l in range(M):
-            iqft_first_register[k, l] = (1 / np.sqrt(M)) * np.exp(2j * np.pi * k * l / M)
+        for ell in range(M):
+            iqft_first_register[k, ell] = (1 / np.sqrt(M)) * np.exp(
+                2j * np.pi * k * ell / M
+            )
 
     return iqft_first_register
 
@@ -25,7 +27,9 @@ def iqft_matrix(first_register_dimension, second_register_dimension=None):
         second_register_dimension = first_register_dimension
 
     I_second_register = np.eye(second_register_dimension, dtype=complex)
-    iqft_total_register = np.kron(iqft_first_register(first_register_dimension), I_second_register)
+    iqft_total_register = np.kron(
+        iqft_first_register(first_register_dimension), I_second_register
+    )
 
     return iqft_total_register
 
@@ -43,7 +47,7 @@ def iqft_first_register_sparse(M):
     l_vals = np.arange(M)
 
     # Create meshgrid for all combinations
-    K, L = np.meshgrid(k_vals, l_vals, indexing='ij')
+    K, L = np.meshgrid(k_vals, l_vals, indexing="ij")
 
     # Flatten to get 1D arrays
     k_flat = K.flatten()
@@ -71,9 +75,11 @@ def iqft_matrix_sparse(first_register_dimension, second_register_dimension=None)
     iqft_first = iqft_first_register_sparse(first_register_dimension)
 
     # Sparse identity for second register
-    I_second_register = sparse_eye(second_register_dimension, dtype=complex, format='csr')
+    I_second_register = sparse_eye(
+        second_register_dimension, dtype=complex, format="csr"
+    )
 
     # Kronecker product of sparse matrices
-    iqft_total_register = sparse_kron(iqft_first, I_second_register, format='csr')
+    iqft_total_register = sparse_kron(iqft_first, I_second_register, format="csr")
 
     return iqft_total_register

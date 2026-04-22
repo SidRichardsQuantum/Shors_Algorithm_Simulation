@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import numpy as np
 from fractions import Fraction
-from math import log2, ceil
 from shors_algorithm_simulation.probabilities import compute_probs
 
 
-def find_period(N: int, a: int, sparse: bool = True, mode: str = "distribution") -> tuple[int, np.ndarray]:
+def find_period(
+    N: int, a: int, sparse: bool = True, mode: str = "distribution"
+) -> tuple[int, np.ndarray]:
     """
     Find a useful period using continued fractions.
 
@@ -16,9 +17,6 @@ def find_period(N: int, a: int, sparse: bool = True, mode: str = "distribution")
     that produce non-trivial factors are accepted.
     """
 
-    n_qubits = ceil(log2(N))
-    Q = 2 ** (2 * n_qubits)
-
     prob_first_register = compute_probs(N, a, sparse=sparse, mode=mode)
 
     for candidate in _iter_period_candidate_diagnostics(N, a, prob_first_register):
@@ -26,7 +24,9 @@ def find_period(N: int, a: int, sparse: bool = True, mode: str = "distribution")
             if _valid_period_for_factors(N, a, r):
                 return r, prob_first_register
 
-    raise ValueError(f"Could not find a validated period for N={N}, a={a}. Try a different a.")
+    raise ValueError(
+        f"Could not find a validated period for N={N}, a={a}. Try a different a."
+    )
 
 
 def period_candidate_diagnostics(
@@ -57,7 +57,9 @@ def _iter_period_candidate_diagnostics(N: int, a: int, probabilities: np.ndarray
 
         fraction = Fraction(int(measured_value), Q).limit_denominator(N)
         tested_periods = list(_period_candidates(fraction.denominator, N))
-        valid_periods = [r for r in tested_periods if _valid_period_for_factors(N, a, r)]
+        valid_periods = [
+            r for r in tested_periods if _valid_period_for_factors(N, a, r)
+        ]
 
         yield {
             "measured_value": int(measured_value),

@@ -9,14 +9,22 @@ from shors_algorithm_simulation.plotting.diagnostics import (
     plot_oracle_period_pattern,
 )
 
-
 PLOT_CHOICES = ["oracle", "marked", "continued", "comparison", "all"]
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Generate Shor period-finding visualizations.")
-    parser.add_argument("--N", type=int, default=21, help="Semiprime for oracle/probability/candidate plots.")
-    parser.add_argument("--a", type=int, default=2, help="Base for oracle/probability/candidate plots.")
+    parser = argparse.ArgumentParser(
+        description="Generate Shor period-finding visualizations."
+    )
+    parser.add_argument(
+        "--N",
+        type=int,
+        default=21,
+        help="Semiprime for oracle/probability/candidate plots.",
+    )
+    parser.add_argument(
+        "--a", type=int, default=2, help="Base for oracle/probability/candidate plots."
+    )
     parser.add_argument(
         "--mode",
         choices=["distribution", "matrix"],
@@ -30,11 +38,34 @@ def parse_args():
         default=["all"],
         help="Plots to generate.",
     )
-    parser.add_argument("--output-dir", default="images", help="Directory for generated plots and CSV files.")
-    parser.add_argument("--top-n", type=int, default=12, help="Number of continued-fraction candidates to plot.")
-    parser.add_argument("--comparison-N", type=int, default=15, help="N for matrix/distribution comparison.")
-    parser.add_argument("--comparison-a", type=int, default=2, help="a for matrix/distribution comparison.")
-    parser.add_argument("--dense-comparison", action="store_true", help="Use dense matrices for comparison plot.")
+    parser.add_argument(
+        "--output-dir",
+        default="images",
+        help="Directory for generated plots and CSV files.",
+    )
+    parser.add_argument(
+        "--top-n",
+        type=int,
+        default=12,
+        help="Number of continued-fraction candidates to plot.",
+    )
+    parser.add_argument(
+        "--comparison-N",
+        type=int,
+        default=15,
+        help="N for matrix/distribution comparison.",
+    )
+    parser.add_argument(
+        "--comparison-a",
+        type=int,
+        default=2,
+        help="a for matrix/distribution comparison.",
+    )
+    parser.add_argument(
+        "--dense-comparison",
+        action="store_true",
+        help="Use dense matrices for comparison plot.",
+    )
     return parser.parse_args()
 
 
@@ -47,7 +78,9 @@ def selected_plots(plot_args):
 
 def print_output(name, value):
     if isinstance(value, dict):
-        print(f"{name}: plot={value['plot']}, csv={value['csv']}, rows={len(value['rows'])}")
+        print(
+            f"{name}: plot={value['plot']}, csv={value['csv']}, rows={len(value['rows'])}"
+        )
     else:
         print(f"{name}: {value}")
 
@@ -62,7 +95,9 @@ def main():
         probabilities = compute_probs(args.N, args.a, mode=args.mode)
 
     if "oracle" in plots:
-        outputs["oracle"] = plot_oracle_period_pattern(args.N, args.a, output_dir=args.output_dir)
+        outputs["oracle"] = plot_oracle_period_pattern(
+            args.N, args.a, output_dir=args.output_dir
+        )
 
     if "continued" in plots:
         outputs["continued"] = plot_continued_fraction_diagnostics(

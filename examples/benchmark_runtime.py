@@ -1,6 +1,5 @@
 from shors_algorithm_simulation.plotting.runtime import benchmark_runtime_table
 
-
 if __name__ == "__main__":
     """Benchmark selected deterministic cases and save a CSV summary."""
     benchmark_cases = [

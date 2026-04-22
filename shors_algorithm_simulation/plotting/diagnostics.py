@@ -69,26 +69,36 @@ def plot_marked_probability_distribution(
     plt = get_pyplot()
     os.makedirs(output_dir, exist_ok=True)
 
-    probabilities = probabilities if probabilities is not None else compute_probs(N, a, mode=mode)
+    probabilities = (
+        probabilities if probabilities is not None else compute_probs(N, a, mode=mode)
+    )
     if period is None:
         period, _ = find_period(N, a, mode=mode)
 
     Q = len(probabilities)
     tick_step = max(1, Q // 16)
-    expected_peaks = [round(s * Q / period) for s in range(period) if round(s * Q / period) < Q]
+    expected_peaks = [
+        round(s * Q / period) for s in range(period) if round(s * Q / period) < Q
+    ]
 
     plt.figure(figsize=(11, 6))
-    plt.bar(range(Q), probabilities, alpha=0.65, color="lightcoral", edgecolor="darkred")
+    plt.bar(
+        range(Q), probabilities, alpha=0.65, color="lightcoral", edgecolor="darkred"
+    )
     for peak in expected_peaks:
         plt.axvline(peak, color="navy", linestyle="--", linewidth=1, alpha=0.75)
     plt.xlabel("First Register State")
     plt.ylabel("Probability")
-    plt.title(f"First Register Probabilities with Period Markers (N={N}, a={a}, r={period})")
+    plt.title(
+        f"First Register Probabilities with Period Markers (N={N}, a={a}, r={period})"
+    )
     set_ket_xticks(plt.gca(), range(0, Q, tick_step))
     plt.grid(True, axis="y", alpha=0.3)
     plt.tight_layout()
 
-    output_file = os.path.join(output_dir, f"marked_probabilities_N={N}_a={a}_r={period}.png")
+    output_file = os.path.join(
+        output_dir, f"marked_probabilities_N={N}_a={a}_r={period}.png"
+    )
     plt.savefig(output_file, dpi=300, bbox_inches="tight")
     plt.close()
     return output_file
@@ -106,10 +116,14 @@ def plot_continued_fraction_diagnostics(
     plt = get_pyplot()
     os.makedirs(output_dir, exist_ok=True)
 
-    probabilities = probabilities if probabilities is not None else compute_probs(N, a, mode=mode)
+    probabilities = (
+        probabilities if probabilities is not None else compute_probs(N, a, mode=mode)
+    )
     rows = period_candidate_diagnostics(N, a, probabilities, top_n=top_n)
 
-    csv_file = os.path.join(output_dir, f"continued_fraction_candidates_N={N}_a={a}.csv")
+    csv_file = os.path.join(
+        output_dir, f"continued_fraction_candidates_N={N}_a={a}.csv"
+    )
     with open(csv_file, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
             f,
@@ -151,7 +165,9 @@ def plot_continued_fraction_diagnostics(
     plt.grid(True, axis="y", alpha=0.3)
     plt.tight_layout()
 
-    plot_file = os.path.join(output_dir, f"continued_fraction_candidates_N={N}_a={a}.png")
+    plot_file = os.path.join(
+        output_dir, f"continued_fraction_candidates_N={N}_a={a}.png"
+    )
     plt.savefig(plot_file, dpi=300, bbox_inches="tight")
     plt.close()
     return {"plot": plot_file, "csv": csv_file, "rows": rows}
@@ -185,7 +201,9 @@ def plot_matrix_distribution_comparison(
     axes[1].set_ylabel("Matrix - distribution")
     axes[1].grid(True, axis="y", alpha=0.3)
     tick_step = max(1, len(distribution) // 16)
-    set_ket_xticks(axes[1], range(0, len(distribution), tick_step), rotation=45, ha="right")
+    set_ket_xticks(
+        axes[1], range(0, len(distribution), tick_step), rotation=45, ha="right"
+    )
     fig.tight_layout()
 
     output_file = os.path.join(output_dir, f"matrix_vs_distribution_N={N}_a={a}.png")

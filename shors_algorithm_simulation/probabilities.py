@@ -8,7 +8,9 @@ import numpy as np
 from shors_algorithm_simulation.quantum.gates import run_quantum_gates
 
 
-def compute_probs(N: int, a: int, sparse: bool = True, mode: str = "distribution") -> np.ndarray:
+def compute_probs(
+    N: int, a: int, sparse: bool = True, mode: str = "distribution"
+) -> np.ndarray:
     """
     Compute first-register probabilities without plotting.
 
@@ -55,7 +57,9 @@ def sample_measurements(
 ) -> tuple[np.ndarray, dict[int, int]]:
     """Sample first-register measurements from an ideal probability vector."""
     rng = np.random.default_rng(random_seed)
-    outcomes = rng.choice(len(probabilities), size=shots, p=probabilities / probabilities.sum())
+    outcomes = rng.choice(
+        len(probabilities), size=shots, p=probabilities / probabilities.sum()
+    )
     counts = dict(sorted(Counter(int(outcome) for outcome in outcomes).items()))
     sampled_probabilities = np.zeros_like(probabilities, dtype=float)
     for outcome, count in counts.items():

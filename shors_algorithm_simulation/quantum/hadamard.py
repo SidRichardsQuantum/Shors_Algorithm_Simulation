@@ -13,8 +13,7 @@ def hadamard_matrix(first_register_qubits, second_register_qubits=None):
     if second_register_qubits is None:
         second_register_qubits = first_register_qubits
 
-    Q = 2 ** first_register_qubits
-    M = 2 ** second_register_qubits
+    M = 2**second_register_qubits
 
     # Single qubit Hadamard
     H = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)
@@ -36,48 +35,49 @@ def hadamard_matrix(first_register_qubits, second_register_qubits=None):
 def hadamard_matrix_sparse(first_register_qubits, second_register_qubits=None):
     """
     Efficient sparse matrix version of Hadamard operator.
-    
+
     Hadamard operation: |x⟩|y⟩ → (2^(-n/2)) Σ_z (-1)^(x·z) |z⟩|y⟩
     """
 
     if second_register_qubits is None:
         second_register_qubits = first_register_qubits
 
-    Q = 2 ** first_register_qubits
-    M = 2 ** second_register_qubits
+    Q = 2**first_register_qubits
+    M = 2**second_register_qubits
     total_size = Q * M
-    
+
     # For each input state |x⟩|y⟩, we need M output states |z⟩|y⟩ for all z
     # Create arrays to store row indices, column indices, and data
     row_indices = []
     col_indices = []
     data_values = []
-    
+
     normalization = 1.0 / np.sqrt(Q)
-    
+
     for input_idx in range(total_size):
         x = input_idx // M
         y = input_idx % M
-        
+
         # For this input state |x⟩|y⟩, create superposition over all |z⟩|y⟩
         for z in range(Q):
             output_idx = z * M + y
-            
+
             # Compute phase factor (-1)^(x·z) where · is bitwise dot product
-            phase = (-1) ** bin(x & z).count('1')
+            phase = (-1) ** bin(x & z).count("1")
             amplitude = normalization * phase
-            
+
             row_indices.append(output_idx)
             col_indices.append(input_idx)
             data_values.append(amplitude)
-    
+
     # Convert to numpy arrays
     row_indices = np.array(row_indices)
     col_indices = np.array(col_indices)
     data_values = np.array(data_values, dtype=complex)
-    
+
     # Create sparse matrix
-    H_sparse = csr_matrix((data_values, (row_indices, col_indices)),
-                          shape=(total_size, total_size))
-    
+    H_sparse = csr_matrix(
+        (data_values, (row_indices, col_indices)), shape=(total_size, total_size)
+    )
+
     return H_sparse

@@ -60,7 +60,9 @@ def shors_simulation(
     """
     _validate_inputs(N, a, max_attempts, shots)
 
-    candidate_bases = [a] if a is not None else _candidate_bases(N, max_attempts, random_seed)
+    candidate_bases = (
+        [a] if a is not None else _candidate_bases(N, max_attempts, random_seed)
+    )
     attempts = []
 
     for candidate_a in candidate_bases:
@@ -79,7 +81,9 @@ def shors_simulation(
     result = attempts[-1]
     if len(attempts) > 1:
         result = dict(result)
-        result["message"] = f"No successful factorization after {len(attempts)} attempts."
+        result["message"] = (
+            f"No successful factorization after {len(attempts)} attempts."
+        )
 
     return _with_attempts(result, attempts)
 
@@ -89,7 +93,9 @@ def json_ready(result: ShorsResult) -> dict[str, object]:
     return _json_ready_value(result)
 
 
-def recover_factors_from_period(N: int, a: int, r: int | None) -> tuple[int, int] | None:
+def recover_factors_from_period(
+    N: int, a: int, r: int | None
+) -> tuple[int, int] | None:
     """Recover non-trivial factors from a validated period."""
     if r is None or r % 2 != 0:
         return None
@@ -167,7 +173,9 @@ def _run_single_attempt(
 
     factors = recover_factors_from_period(N, checked_a, period)
     if factors is None:
-        message = f"Recovered period r={period}, but it did not produce non-trivial factors."
+        message = (
+            f"Recovered period r={period}, but it did not produce non-trivial factors."
+        )
     else:
         message = _factor_message(N, checked_a, period, factors)
 
@@ -198,9 +206,13 @@ def _find_period_with_optional_sampling(
         return period, probabilities, None
 
     probabilities = compute_probs(N, a, sparse=sparse, mode=mode)
-    sampled_probabilities, counts = sample_measurements(probabilities, shots, random_seed)
+    sampled_probabilities, counts = sample_measurements(
+        probabilities, shots, random_seed
+    )
 
-    for candidate in period_candidate_diagnostics(N, a, sampled_probabilities, top_n=None):
+    for candidate in period_candidate_diagnostics(
+        N, a, sampled_probabilities, top_n=None
+    ):
         valid_periods = candidate["valid_periods"]
         if valid_periods:
             return valid_periods[0], sampled_probabilities, counts
@@ -218,24 +230,38 @@ def _candidate_bases(N: int, max_attempts: int, random_seed: int | None) -> list
     return candidates[:max_attempts]
 
 
-def _validate_inputs(N: int, a: int | None, max_attempts: int, shots: int | None) -> None:
+def _validate_inputs(
+    N: int, a: int | None, max_attempts: int, shots: int | None
+) -> None:
     if isinstance(N, bool) or not isinstance(N, int) or N <= 1:
         raise ValueError("N must be an integer greater than 1.")
 
     if _is_prime(N):
-        raise ValueError("N must be composite; prime inputs do not have non-trivial factors.")
+        raise ValueError(
+            "N must be composite; prime inputs do not have non-trivial factors."
+        )
 
     if a is not None and (isinstance(a, bool) or not isinstance(a, int)):
         raise ValueError("a must be an integer when provided.")
 
     if a is not None and not (2 <= a <= N - 1):
-        raise ValueError(f"Invalid value for 'a': {a}. Must be between 2 and {N - 1} (inclusive).")
+        raise ValueError(
+            f"Invalid value for 'a': {a}. Must be between 2 and {N - 1} (inclusive)."
+        )
 
-    if isinstance(max_attempts, bool) or not isinstance(max_attempts, int) or max_attempts < 1:
+    if (
+        isinstance(max_attempts, bool)
+        or not isinstance(max_attempts, int)
+        or max_attempts < 1
+    ):
         raise ValueError("max_attempts must be an integer greater than or equal to 1.")
 
-    if shots is not None and (isinstance(shots, bool) or not isinstance(shots, int) or shots < 1):
-        raise ValueError("shots must be an integer greater than or equal to 1 when provided.")
+    if shots is not None and (
+        isinstance(shots, bool) or not isinstance(shots, int) or shots < 1
+    ):
+        raise ValueError(
+            "shots must be an integer greater than or equal to 1 when provided."
+        )
 
 
 def _is_prime(value: int) -> bool:

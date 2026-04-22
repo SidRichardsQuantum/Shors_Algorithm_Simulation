@@ -2,9 +2,15 @@ from __future__ import annotations
 
 import numpy as np
 from math import log2, ceil
-from shors_algorithm_simulation.quantum.hadamard import hadamard_matrix, hadamard_matrix_sparse
+from shors_algorithm_simulation.quantum.hadamard import (
+    hadamard_matrix,
+    hadamard_matrix_sparse,
+)
 from shors_algorithm_simulation.quantum.iqft import iqft_matrix, iqft_matrix_sparse
-from shors_algorithm_simulation.quantum.oracle import oracle_matrix, oracle_matrix_sparse
+from shors_algorithm_simulation.quantum.oracle import (
+    oracle_matrix,
+    oracle_matrix_sparse,
+)
 
 
 def run_quantum_gates(
@@ -36,10 +42,10 @@ def run_quantum_gates(
     if second_register_qubits is None:
         second_register_qubits = n_qubits
 
-    Q = 2 ** first_register_qubits
-    M = 2 ** n_qubits
-    if M != 2 ** second_register_qubits:
-        M = 2 ** second_register_qubits
+    Q = 2**first_register_qubits
+    M = 2**n_qubits
+    if M != 2**second_register_qubits:
+        M = 2**second_register_qubits
 
     total_size = Q * M
     max_sparse_hadamard_entries = 5_000_000
@@ -63,7 +69,7 @@ def run_quantum_gates(
     phi2[0] = 1.0
     phi = np.kron(phi1, phi2)
 
-    if sparse:  #Sparse matrices
+    if sparse:  # Sparse matrices
         # Apply Hadamard matrix
         H = hadamard_matrix_sparse(first_register_qubits, second_register_qubits)
         phi = H @ phi
@@ -89,5 +95,5 @@ def run_quantum_gates(
         IQFT = iqft_matrix(Q, M)
         phi = IQFT @ phi
 
-    #Returns the final whole register state
+    # Returns the final whole register state
     return phi

@@ -4,7 +4,6 @@ import sys
 import venv
 from pathlib import Path
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -14,7 +13,9 @@ def test_editable_install_exposes_console_script(tmp_path):
 
     bin_dir = "Scripts" if os.name == "nt" else "bin"
     python = venv_dir / bin_dir / ("python.exe" if os.name == "nt" else "python")
-    shors_sim = venv_dir / bin_dir / ("shors-sim.exe" if os.name == "nt" else "shors-sim")
+    shors_sim = (
+        venv_dir / bin_dir / ("shors-sim.exe" if os.name == "nt" else "shors-sim")
+    )
 
     subprocess.run(
         [

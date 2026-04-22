@@ -1,5 +1,7 @@
-from shors_algorithm_simulation.quantum.circuits import build_period_finding_circuit, draw_circuit
-
+from shors_algorithm_simulation.quantum.circuits import (
+    build_period_finding_circuit,
+    draw_circuit,
+)
 
 if __name__ == "__main__":
     circuit = build_period_finding_circuit(
