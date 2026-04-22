@@ -13,9 +13,12 @@ All notable changes to this project are documented here.
 - Added optional circuit dependencies via `.[circuits]` and `requirements-circuits.txt`.
 - Added package metadata in `pyproject.toml`.
 - Added GitHub Actions CI for Python 3.10, 3.11, 3.12, circuit extras, and package build smoke tests.
+- Added a PyPI trusted-publishing workflow for GitHub Releases.
 - Added package install smoke tests.
 - Added `examples/shots_sweep_example.py` for success rate versus sampled measurements.
 - Added configurable output directories for generated plots.
+- Added `MANIFEST.in` so source distributions include docs, examples, tests, and reference outputs.
+- Added `.gitattributes` for consistent line endings and binary/reference artifact handling.
 
 ### Changed
 

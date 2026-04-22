@@ -104,17 +104,23 @@ Shors_Algorithm_Simulation
 ### Installation
 
 ```bash
-git clone https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation
-cd Shors_Algorithm_Simulation
-pip install -r requirements.txt
+python -m pip install shors-algorithm-simulation
 ```
 
-`requirements.txt` includes the simulator dependencies plus `pytest` for local test runs. Circuit diagram generation uses optional Qiskit dependencies:
+The PyPI install command applies after the first published release.
+
+For development from source:
 
 ```bash
-pip install -r requirements-circuits.txt
-# or, for editable/package installs:
-pip install ".[circuits]"
+git clone https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation
+cd Shors_Algorithm_Simulation
+python -m pip install -e ".[test]"
+```
+
+Circuit diagram generation uses optional Qiskit dependencies:
+
+```bash
+python -m pip install ".[circuits]"
 ```
 
 ### Example Usage
@@ -209,8 +215,12 @@ When `shots` is provided, the simulator samples measurement counts from that ide
 ### Tests
 
 ```bash
-pytest -q
+python -m pytest -q
+ruff check .
+black --check .
 ```
+
+Releases are published to PyPI by GitHub Actions trusted publishing when a GitHub Release is published with a tag matching the version in `pyproject.toml`.
 
 ### Limitations
 
