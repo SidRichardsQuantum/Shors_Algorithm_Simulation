@@ -1,0 +1,641 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Site
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install site tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install markdown
+
+      - name: Build static site
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import html
+          import re
+          import shutil
+          from pathlib import Path
+
+          import markdown
+
+          docs = [
+              ("README.md", "Overview", "index.html"),
+              ("THEORY.md", "Theory", "theory.html"),
+              ("CIRCUITS.md", "Circuits", "circuits.html"),
+              ("RESULTS.md", "Results", "results.html"),
+              ("CHANGELOG.md", "Changelog", "changelog.html"),
+          ]
+          repo = Path.cwd()
+          site = repo / "_site"
+
+          if site.exists():
+              shutil.rmtree(site)
+          site.mkdir()
+
+          if (repo / "images").exists():
+              shutil.copytree(repo / "images", site / "images")
+
+          md = markdown.Markdown(
+              extensions=["extra", "sane_lists", "toc"],
+              output_format="html5",
+          )
+
+          page_map = {source: output for source, _, output in docs}
+
+          def rewrite_links(markdown_text: str) -> str:
+              def replace(match: re.Match[str]) -> str:
+                  label = match.group(1)
+                  target = match.group(2)
+                  if target in page_map:
+                      return f"[{label}]({page_map[target]})"
+                  return match.group(0)
+
+              return re.sub(r"\[([^\]]+)\]\(([^)]+\.md)\)", replace, markdown_text)
+
+          def title_from(markdown_text: str, fallback: str) -> str:
+              match = re.search(r"^#\s+(.+)$", markdown_text, re.MULTILINE)
+              return match.group(1).strip() if match else fallback
+
+          def render_markdown(markdown_text: str) -> str:
+              md.reset()
+              return md.convert(rewrite_links(markdown_text))
+
+          nav = "\n".join(
+              f'<a href="{output}">{html.escape(label)}</a>'
+              for _, label, output in docs
+          )
+
+          css = """
+          :root {
+            color-scheme: light dark;
+            --bg: #f7f7f4;
+            --surface: #ffffff;
+            --surface-muted: #ededeb;
+            --text: #1d2328;
+            --muted: #5b6670;
+            --line: #d7d9d6;
+            --accent: #126c83;
+            --accent-strong: #0f5364;
+            --accent-soft: #dceff3;
+            --code-bg: #eef2f1;
+            --shadow: 0 18px 45px rgba(34, 41, 47, 0.08);
+            --shadow-soft: 0 10px 30px rgba(34, 41, 47, 0.06);
+          }
+
+          @media (prefers-color-scheme: dark) {
+            :root {
+              --bg: #101416;
+              --surface: #171d20;
+              --surface-muted: #20282b;
+              --text: #edf1f2;
+              --muted: #a9b4b8;
+              --line: #2e393d;
+              --accent: #66c5d7;
+              --accent-strong: #9eddea;
+              --accent-soft: #17333a;
+              --code-bg: #11191c;
+              --shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+              --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.18);
+            }
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          html {
+            scroll-behavior: smooth;
+          }
+
+          body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+              BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.6;
+            text-rendering: optimizeLegibility;
+          }
+
+          a {
+            color: var(--accent-strong);
+            text-decoration-color: color-mix(in srgb, var(--accent) 65%, transparent);
+            text-underline-offset: 0.2em;
+          }
+
+          a:hover {
+            color: var(--accent);
+          }
+
+          a:focus-visible,
+          main:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 4px;
+          }
+
+          .skip-link {
+            position: fixed;
+            top: 0.75rem;
+            left: 0.75rem;
+            z-index: 20;
+            transform: translateY(-150%);
+            border: 1px solid var(--accent-strong);
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
+            background: var(--surface);
+            color: var(--accent-strong);
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: var(--shadow);
+            transition: transform 160ms ease;
+          }
+
+          .skip-link:focus-visible {
+            transform: translateY(0);
+          }
+
+          .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 1rem clamp(1rem, 4vw, 3rem);
+            border-bottom: 1px solid var(--line);
+            background: color-mix(in srgb, var(--bg) 88%, transparent);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+          }
+
+          .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: var(--text);
+            font-weight: 700;
+            text-decoration: none;
+          }
+
+          .brand-mark {
+            display: inline-grid;
+            width: 2.2rem;
+            height: 2.2rem;
+            place-items: center;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--accent-strong);
+            font-size: 0.82rem;
+            letter-spacing: 0;
+          }
+
+          .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.35rem 1rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+          }
+
+          .nav-links a {
+            color: inherit;
+            text-decoration: none;
+          }
+
+          .section {
+            width: min(1120px, calc(100% - 2rem));
+            margin: 0 auto;
+            padding: clamp(3rem, 8vw, 6rem) 0;
+          }
+
+          .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+            align-items: center;
+            gap: clamp(2rem, 5vw, 4rem);
+            min-height: calc(72vh - 5rem);
+          }
+
+          .hero h1 {
+            max-width: 11ch;
+            margin: 0;
+            font-size: clamp(3rem, 10vw, 7rem);
+            line-height: 0.9;
+            letter-spacing: 0;
+          }
+
+          .eyebrow {
+            margin: 0 0 0.75rem;
+            color: var(--accent-strong);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+          }
+
+          .hero-text {
+            max-width: 680px;
+            margin: 1.4rem 0 0;
+            color: var(--muted);
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+          }
+
+          .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+          }
+
+          .button {
+            display: inline-flex;
+            min-height: 2.75rem;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 0.72rem 1rem;
+            background: var(--surface);
+            color: var(--text);
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 160ms ease;
+          }
+
+          .button.primary {
+            border-color: var(--accent-strong);
+            background: var(--accent-strong);
+            color: #ffffff;
+          }
+
+          .button:hover {
+            transform: translateY(-1px);
+          }
+
+          .focus-panel,
+          .doc-card {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+          }
+
+          .focus-panel {
+            padding: 1.4rem;
+          }
+
+          .focus-panel h2 {
+            margin: 0 0 1rem;
+            font-size: 1rem;
+          }
+
+          .focus-panel ul {
+            display: grid;
+            gap: 0.85rem;
+            margin: 0;
+            padding-left: 1.1rem;
+            color: var(--muted);
+          }
+
+          .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+          }
+
+          .doc-card {
+            display: flex;
+            min-height: 160px;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.25rem;
+            text-decoration: none;
+            transition:
+              border-color 160ms ease,
+              box-shadow 160ms ease,
+              transform 160ms ease;
+          }
+
+          .doc-card:hover,
+          .doc-card:focus-visible {
+            border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+          }
+
+          .doc-card h2 {
+            margin: 0 0 0.6rem;
+            color: var(--text);
+            font-size: 1.15rem;
+            line-height: 1.25;
+          }
+
+          .doc-card p {
+            margin: 0;
+            color: var(--muted);
+          }
+
+          .content {
+            border-top: 1px solid var(--line);
+          }
+
+          .prose {
+            max-width: 900px;
+          }
+
+          .prose h1,
+          .prose h2,
+          .prose h3 {
+            line-height: 1.15;
+            letter-spacing: 0;
+          }
+
+          .prose h1 {
+            font-size: clamp(2.2rem, 5vw, 4rem);
+          }
+
+          .prose h2 {
+            margin-top: 2.4rem;
+            font-size: clamp(1.7rem, 3vw, 2.3rem);
+          }
+
+          .prose h3 {
+            margin-top: 2rem;
+            font-size: 1.35rem;
+          }
+
+          .prose p,
+          .prose li {
+            color: var(--muted);
+          }
+
+          .prose img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            box-shadow: var(--shadow-soft);
+          }
+
+          .prose table {
+            display: block;
+            overflow-x: auto;
+            width: 100%;
+            border-collapse: collapse;
+          }
+
+          .prose th,
+          .prose td {
+            border: 1px solid var(--line);
+            padding: 0.55rem 0.7rem;
+          }
+
+          .prose th {
+            background: var(--surface-muted);
+            color: var(--text);
+          }
+
+          .prose code {
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 0.12rem 0.3rem;
+            background: var(--code-bg);
+            color: var(--text);
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            font-size: 0.92em;
+          }
+
+          .prose pre {
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 1rem;
+            background: var(--code-bg);
+          }
+
+          .prose pre code {
+            border: 0;
+            padding: 0;
+            background: transparent;
+          }
+
+          .site-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 2rem clamp(1rem, 4vw, 3rem);
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+          }
+
+          .site-footer a {
+            font-weight: 700;
+            text-decoration: none;
+          }
+
+          @media (max-width: 880px) {
+            .hero {
+              grid-template-columns: 1fr;
+              min-height: auto;
+            }
+
+            .doc-grid {
+              grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+          }
+
+          @media (max-width: 620px) {
+            .site-header {
+              align-items: flex-start;
+              flex-direction: column;
+              gap: 0.75rem;
+            }
+
+            .nav-links {
+              justify-content: flex-start;
+            }
+
+            .section {
+              width: min(100% - 1rem, 1120px);
+              padding: clamp(2.5rem, 12vw, 4rem) 0;
+            }
+
+            .hero h1 {
+              font-size: clamp(3rem, 18vw, 4.8rem);
+            }
+
+            .doc-grid {
+              grid-template-columns: 1fr;
+            }
+
+            .button {
+              width: 100%;
+            }
+
+            .site-footer {
+              align-items: flex-start;
+              flex-direction: column;
+            }
+          }
+          """
+
+          layout = """<!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <meta name="description" content="Educational classical simulation of Shor's period-finding algorithm.">
+              <meta name="theme-color" content="#0f5364">
+              <title>{title}</title>
+              <link rel="stylesheet" href="styles.css">
+            </head>
+            <body>
+              <a class="skip-link" href="#top">Skip to main content</a>
+              <header class="site-header">
+                <a class="brand" href="index.html" aria-label="Shor's Algorithm Simulation home">
+                  <span class="brand-mark">SA</span>
+                  <span>Shor's Algorithm Simulation</span>
+                </a>
+                <nav class="nav-links" aria-label="Primary navigation">
+                  {nav}
+                </nav>
+              </header>
+              <main id="top" tabindex="-1">
+                {body}
+              </main>
+              <footer class="site-footer">
+                <span>Sid Richards Quantum</span>
+                <a href="#top">Back to top</a>
+              </footer>
+            </body>
+          </html>
+          """
+
+          home_cards = "\n".join(
+              f"""<a class="doc-card" href="{output}">
+                <span>
+                  <h2>{html.escape(label)}</h2>
+                  <p>{html.escape(title_from((repo / source).read_text(), label))}</p>
+                </span>
+                <strong>Read more</strong>
+              </a>"""
+              for source, label, output in docs[1:]
+              if (repo / source).exists()
+          )
+
+          for source, label, output in docs:
+              path = repo / source
+              if not path.exists():
+                  continue
+
+              markdown_text = path.read_text(encoding="utf-8")
+              page_title = title_from(markdown_text, label)
+              article = render_markdown(markdown_text)
+
+              if output == "index.html":
+                  body = f"""
+                  <section class="hero section">
+                    <div>
+                      <p class="eyebrow">Scientific computing and quantum software</p>
+                      <h1>Shor's Algorithm Simulation</h1>
+                      <p class="hero-text">
+                        A pure Python educational simulator for Shor's quantum factorization algorithm,
+                        with matrix and distribution modes, period-finding diagnostics, and generated visualizations.
+                      </p>
+                      <div class="hero-actions">
+                        <a class="button primary" href="https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation">GitHub</a>
+                        <a class="button" href="https://pypi.org/project/shors-algorithm-simulation/">PyPI</a>
+                      </div>
+                    </div>
+                    <aside class="focus-panel" aria-label="Project highlights">
+                      <h2>Focus Areas</h2>
+                      <ul>
+                        <li>Classical simulation of quantum period finding</li>
+                        <li>IQFT probability distributions and diagnostics</li>
+                        <li>Qiskit circuit diagrams for educational walkthroughs</li>
+                        <li>Reusable Python package and command-line interface</li>
+                      </ul>
+                    </aside>
+                  </section>
+                  <section class="section">
+                    <div class="doc-grid">
+                      {home_cards}
+                    </div>
+                  </section>
+                  <section class="content section prose">
+                    {article}
+                  </section>
+                  """
+              else:
+                  body = f"""
+                  <section class="content section prose">
+                    {article}
+                  </section>
+                  """
+
+              (site / output).write_text(
+                  layout.format(title=html.escape(page_title), nav=nav, body=body),
+                  encoding="utf-8",
+              )
+
+          (site / "styles.css").write_text(css, encoding="utf-8")
+          PY
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy Site
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
