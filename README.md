@@ -2,6 +2,8 @@
 
 [![Tests](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/actions/workflows/tests.yml/badge.svg)](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/actions/workflows/tests.yml)
 
+**Project website:** [https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/](https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/)
+
 A pure Python implementation of Shor's quantum factorization algorithm using classical simulation of the period-finding step.
 The project supports both explicit matrix simulation for very small inputs and a faster distribution-based simulation for the ideal first-register measurement probabilities.
 
@@ -22,11 +24,11 @@ The project supports both explicit matrix simulation for very small inputs and a
 Shor's algorithm is a quantum algorithm that efficiently finds the prime factors of large integers, which forms the basis for breaking RSA encryption.
 This implementation simulates the quantum operations classically to illustrate how Shor's algorithm works step by step. `mode="matrix"` explicitly applies the simulated gates and grows exponentially in memory; `mode="distribution"` computes the same ideal first-register probability distribution without materializing the full matrices.
 
-See [THEORY.md](THEORY.md) for a descriptive algorithm walkthrough.
+See the [theory walkthrough](https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/theory.html) for a descriptive algorithm walkthrough.
 
-See [CIRCUITS.md](CIRCUITS.md) for the register and circuit-diagram walkthrough.
+See the [circuit walkthrough](https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/circuits.html) for the register and circuit-diagram walkthrough.
 
-See [RESULTS.md](RESULTS.md) for results and conclusions.
+See the [results page](https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/results.html) for results and conclusions.
 
 ### Algorithm Steps
 

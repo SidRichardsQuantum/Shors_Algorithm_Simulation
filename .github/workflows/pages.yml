@@ -523,6 +523,16 @@ jobs:
               <meta name="theme-color" content="#0f5364">
               <title>{title}</title>
               <link rel="stylesheet" href="styles.css">
+              <script>
+                window.MathJax = {{
+                  tex: {{
+                    inlineMath: [["$", "$"], ["\\\\(", "\\\\)"]],
+                    displayMath: [["$$", "$$"], ["\\\\[", "\\\\]"]],
+                    processEscapes: true
+                  }}
+                }};
+              </script>
+              <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
             </head>
             <body>
               <a class="skip-link" href="#top">Skip to main content</a>
