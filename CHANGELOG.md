@@ -2,6 +2,25 @@
 
 All notable changes to this project are documented here.
 
+## v0.1.1, 06/05/2026
+
+### Added
+
+- Added README badges for PyPI version, supported Python version, tests, docs, license, and GitHub Sponsors.
+- Added PyPI-facing project metadata, keywords, classifiers, and project URLs in `pyproject.toml`.
+
+### Changed
+
+- Updated README command-line examples to prefer the installed `shors-sim` console entry point.
+- Updated the README project structure to include current packaging, plotting, and circuit helper files.
+- Updated the generated documentation homepage action to point to installation guidance before the PyPI release is live.
+- Expanded `.gitignore` coverage for common Python build, coverage, and test artifacts.
+
+### Fixed
+
+- Replaced the PyPI-derived Python versions badge with a static `>=3.10` badge so README previews do not show a missing badge before publishing.
+- Removed the deprecated license classifier from `pyproject.toml` to keep package builds compatible with modern setuptools license metadata validation.
+
 ## v0.1.0, 22/04/2026
 
 ### Added
