@@ -4,16 +4,48 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shors-algorithm-simulation"
-version = "0.1.0"
+version = "0.1.1"
 description = "Educational classical simulation of Shor's period-finding algorithm."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
+authors = [
+    { name = "Sid Richards" },
+]
+keywords = [
+    "shor",
+    "shors-algorithm",
+    "quantum-computing",
+    "quantum-algorithms",
+    "factorization",
+    "simulation",
+    "education",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+]
 dependencies = [
     "numpy",
     "matplotlib",
     "scipy",
 ]
+
+[project.urls]
+Homepage = "https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/"
+Documentation = "https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/"
+Source = "https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation"
+Issues = "https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/issues"
+Changelog = "https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 circuits = [

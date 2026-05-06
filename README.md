@@ -1,8 +1,36 @@
 # Classical Simulation of Shor's Algorithm
 
-[![Tests](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/actions/workflows/tests.yml/badge.svg)](https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/actions/workflows/tests.yml)
+<p align="center">
+
+<a href="https://pypi.org/project/shors-algorithm-simulation/">
+<img src="https://img.shields.io/pypi/v/shors-algorithm-simulation?style=flat-square" alt="PyPI Version">
+</a>
+
+<a href="pyproject.toml">
+<img src="https://img.shields.io/badge/python-%3E%3D3.10-blue?style=flat-square&logo=python&logoColor=white" alt="Python >=3.10">
+</a>
+
+<a href="https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation/actions/workflows/tests.yml">
+<img src="https://img.shields.io/github/actions/workflow/status/SidRichardsQuantum/Shors_Algorithm_Simulation/tests.yml?label=tests&style=flat-square" alt="Tests">
+</a>
+
+<a href="https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/">
+<img src="https://img.shields.io/github/actions/workflow/status/SidRichardsQuantum/Shors_Algorithm_Simulation/pages.yml?label=docs&style=flat-square" alt="Docs">
+</a>
+
+<a href="LICENSE">
+<img src="https://img.shields.io/github/license/SidRichardsQuantum/Shors_Algorithm_Simulation?style=flat-square" alt="License">
+</a>
+
+<a href="https://github.com/sponsors/SidRichardsQuantum">
+<img src="https://img.shields.io/badge/sponsor-GitHub-ea4aaa?style=flat-square&logo=githubsponsors" alt="Sponsor">
+</a>
+
+</p>
 
 **Project website:** [https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/](https://SidRichardsQuantum.github.io/Shors_Algorithm_Simulation/)
+
+**PyPI:** [https://pypi.org/project/shors-algorithm-simulation/](https://pypi.org/project/shors-algorithm-simulation/)
 
 A pure Python implementation of Shor's quantum factorization algorithm using classical simulation of the period-finding step.
 The project supports both explicit matrix simulation for very small inputs and a faster distribution-based simulation for the ideal first-register measurement probabilities.
@@ -63,7 +91,11 @@ A quantum circuit sketch for Shor's Algorithm using 8 qubits:
 ```
 Shors_Algorithm_Simulation
 ├── LICENSE                       # Project license
+├── CHANGELOG.md                  # Release history
+├── MANIFEST.in                   # Source distribution file manifest
+├── pyproject.toml                # Package metadata and tool configuration
 ├── requirements.txt              # Python dependencies
+├── requirements-circuits.txt     # Optional circuit-rendering dependencies
 ├── README.md                     # This file
 ├── CIRCUITS.md                   # Circuit diagram walkthrough
 ├── THEORY.md                     # Theoretical background
@@ -92,6 +124,7 @@ Shors_Algorithm_Simulation
     │   ├── __init__.py
     │   ├── diagnostics.py        # Educational diagnostics and comparison plots
     │   ├── formatting.py         # Plot label formatting
+    │   ├── matplotlib_helpers.py # Shared matplotlib compatibility helpers
     │   ├── probabilities.py      # Probability visualization
     │   └── runtime.py            # Runtime analysis plots
     └── quantum/                  # Quantum operators and optional diagrams
@@ -100,7 +133,8 @@ Shors_Algorithm_Simulation
         ├── gates.py              # Quantum circuit execution
         ├── hadamard.py           # Hadamard gate implementation
         ├── iqft.py               # Inverse QFT implementation
-        └── oracle.py             # Modular exponentiation oracle
+        ├── oracle.py             # Modular exponentiation oracle
+        └── quantum_circuit.py    # Compatibility circuit diagram entry point
 ```
 
 ### Installation
@@ -129,7 +163,7 @@ python -m pip install ".[circuits]"
 
 **Terminal inputs**:
 
-```python
+```bash
 python -m examples.factorisation_example   # single run with plot output
 python -m examples.no_plot_example         # single run without plotting
 python -m examples.multiple_cases_example  # batch of small deterministic cases
@@ -141,11 +175,13 @@ python -m examples.circuit_diagrams_example --N 15 --a 2
 **Command-line usage**:
 
 ```bash
-python main.py --N 35 --a 2 --mode distribution --plots --output-dir images
-python main.py --N 15 --a 2 --mode matrix --json
-python main.py --N 21 --a 2 --shots 1024 --seed 1 --json
-python main.py --N 33 --max-attempts 5 --seed 0
+shors-sim --N 35 --a 2 --mode distribution --plots --output-dir images
+shors-sim --N 15 --a 2 --mode matrix --json
+shors-sim --N 21 --a 2 --shots 1024 --seed 1 --json
+shors-sim --N 33 --max-attempts 5 --seed 0
 ```
+
+`python main.py ...` is kept as a compatibility entry point for running from a source checkout.
 
 Visualization plots can also be selected from the command line:
 

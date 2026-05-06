@@ -589,7 +589,7 @@ jobs:
                       </p>
                       <div class="hero-actions">
                         <a class="button primary" href="https://github.com/SidRichardsQuantum/Shors_Algorithm_Simulation">GitHub</a>
-                        <a class="button" href="https://pypi.org/project/shors-algorithm-simulation/">PyPI</a>
+                        <a class="button" href="#installation">Install</a>
                       </div>
                     </div>
                     <aside class="focus-panel" aria-label="Project highlights">
