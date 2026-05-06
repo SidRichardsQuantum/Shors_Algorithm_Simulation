@@ -1,6 +1,9 @@
 name: Publish
 
 on:
+  push:
+    tags:
+      - "v*"
   release:
     types: [published]
 
@@ -28,7 +31,7 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Verify release tag matches package version
+      - name: Verify tag matches package version
         run: |
           python - <<'PY'
           import os
@@ -41,7 +44,7 @@ jobs:
           expected_tags = {version, f"v{version}"}
           if tag not in expected_tags:
               raise SystemExit(
-                  f"Release tag {tag!r} does not match pyproject version {version!r}. "
+                  f"Tag {tag!r} does not match pyproject version {version!r}. "
                   f"Expected one of: {', '.join(sorted(expected_tags))}"
               )
           PY
