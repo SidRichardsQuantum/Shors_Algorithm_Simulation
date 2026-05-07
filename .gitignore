@@ -17,6 +17,7 @@ dist/
 *.egg
 pip-wheel-metadata/
 outputs/
+_site/
 
 .venv/
 venv/
