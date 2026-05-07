@@ -7,7 +7,6 @@ from pathlib import Path
 
 import markdown
 
-
 DOCS = [
     ("README.md", "Overview", "index.html"),
     ("THEORY.md", "Theory", "theory.html"),
@@ -157,8 +156,7 @@ def build_home_cards(repo: Path) -> str:
         if not path.exists():
             continue
         markdown_text = path.read_text(encoding="utf-8")
-        cards.append(
-            f"""<article class="project-card">
+        cards.append(f"""<article class="project-card">
               <div>
                 <h3>{html.escape(title_from(markdown_text, label))}</h3>
                 <p>{html.escape(excerpt_from(markdown_text))}</p>
@@ -170,8 +168,7 @@ def build_home_cards(repo: Path) -> str:
               <div class="card-links">
                 <a href="{output}">Open documentation</a>
               </div>
-            </article>"""
-        )
+            </article>""")
     return "\n".join(cards)
 
 
@@ -1410,7 +1407,9 @@ def main() -> None:
             </section>
             """
 
-        (site / output).write_text(build_layout(page_title, body, nav), encoding="utf-8")
+        (site / output).write_text(
+            build_layout(page_title, body, nav), encoding="utf-8"
+        )
 
     (site / "styles.css").write_text(CSS, encoding="utf-8")
 
